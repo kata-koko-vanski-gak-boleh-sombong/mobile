@@ -17,7 +17,7 @@
             android:label="@string/title_activity_quiz"
             android:theme="@style/Theme.Edulaw" />
         <activity
-            android:name=".ui.screens.OnboardActivity"
+            android:name=".ui.OnboardActivity"
             android:exported="true"
             android:label="@string/title_activity_onboard"
             android:theme="@style/Theme.Edulaw">
