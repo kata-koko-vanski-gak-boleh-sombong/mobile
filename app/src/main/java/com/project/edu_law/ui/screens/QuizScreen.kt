@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import com.project.edu_law.data.ScenarioData
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 import com.project.edu_law.ui.theme.*
+import android.util.Base64
 
 @Composable
 fun QuizScreen(
@@ -369,7 +370,10 @@ fun QuizScreen(
                 ) {
                     OutlinedButton(
                         onClick = {
-                            val safeContext = java.net.URLEncoder.encode(endingData.summary, "UTF-8")
+                            // MENGGUNAKAN BASE64 AGAR 100% AMAN DARI ERROR KARAKTER
+                            val bytes = endingData.summary.toByteArray(Charsets.UTF_8)
+                            val safeContext = Base64.encodeToString(bytes, Base64.URL_SAFE or Base64.NO_WRAP)
+
                             navController.navigate("chat_ai/$safeContext")
                         },
                         modifier = Modifier

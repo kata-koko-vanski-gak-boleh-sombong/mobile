@@ -18,6 +18,8 @@ import com.project.edu_law.ui.screens.LegalScenarioScreen
 import com.project.edu_law.ui.screens.QuizScreen
 import com.project.edu_law.ui.screens.ScenarioOverviewScreen
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
+import android.util.Base64
+import com.project.edu_law.ui.screens.ChatScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues) {
@@ -87,6 +89,30 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
                 factory = ScenarioViewModel.provideFactory(repository)
             )
             GenerateScreen(viewModel = viewModel, navController = navController)
+        }
+
+        // ROUTE UNTUK CHAT AI
+        composable(
+            route = "chat_ai/{encodedContext}"
+        ) { backStackEntry ->
+            val encodedContext = backStackEntry.arguments?.getString("encodedContext") ?: ""
+
+            // Decode dari Base64 kembali ke teks normal
+            val decodedContext = try {
+                String(Base64.decode(encodedContext, Base64.URL_SAFE or Base64.NO_WRAP), Charsets.UTF_8)
+            } catch (e: Exception) {
+                "Konteks tidak ditemukan."
+            }
+
+            val viewModel: ScenarioViewModel = viewModel(
+                factory = ScenarioViewModel.provideFactory(repository)
+            )
+
+            ChatScreen(
+                endingContext = decodedContext,
+                viewModel = viewModel,
+                navController = navController
+            )
         }
     }
 }
