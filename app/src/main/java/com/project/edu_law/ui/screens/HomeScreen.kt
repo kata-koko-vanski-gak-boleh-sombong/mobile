@@ -1,8 +1,9 @@
 package com.project.edu_law.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,8 +26,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 
 val PrimaryBlue = Color(0xFF004080)
 val BackgroundGray = Color(0xFFF8F9FA)
@@ -44,7 +43,7 @@ fun HomeScreen() {
             .statusBarsPadding()
     ) {
         Text(
-            text = "Edu Justice",
+            text = "EduJustice",
             fontSize = 28.sp,
             fontWeight = FontWeight.ExtraBold,
             color = PrimaryBlue
@@ -62,7 +61,12 @@ fun HomeScreen() {
             colors = CardDefaults.cardColors(containerColor = PrimaryBlue)
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
-                Icon(Icons.Default.Balance, contentDescription = null, tint = Color.White, modifier = Modifier.size(40.dp))
+                Icon(
+                    imageVector = Icons.Default.Balance,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(40.dp)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Selamat Datang di Simulasi Rule of Law",
@@ -137,7 +141,7 @@ fun HomeScreen() {
             icon = Icons.Default.Timeline
         ) {
             Text(
-                text = "Hukum bukan sekadar pasal tertulis, melainkan ekosistem. Setiap kebijakan atau keputusan yang diambil akan saling mempengaruhi 4 pilar di atas.\n\nContoh: Jika seorang pimpinan 'memberi toleransi' pada penyalahgunaan kuota sekolah demi menjaga hubungan baik dengan pejabat, ia mungkin merasa menjaga stabilitas. Namun secara hukum, tindakan tersebut langsung menurunkan skor 'Ketiadaan Korupsi' dan mencederai 'Keadilan Perdata' bagi warga yang kehilangan haknya.\n\nSimulasi ini melatih Anda untuk berpikir sistemik—melihat bahwa tidak ada pelanggaran hukum yang dampaknya berdiri sendiri.",
+                text = "Setiap keputusan dalam simulasi ini akan langsung memengaruhi 4 pilar di atas secara sistemik.\n\nContoh: Membiarkan penyalahgunaan kuota sekolah demi relasi mungkin terlihat sebagai kompromi kecil, namun secara hukum ini menurunkan skor 'Ketiadaan Korupsi' sekaligus mencederai 'Hak Fundamental' warga lain yang kehilangan akses pendidikan yang adil.",
                 fontSize = 14.sp,
                 color = Color.DarkGray,
                 lineHeight = 22.sp

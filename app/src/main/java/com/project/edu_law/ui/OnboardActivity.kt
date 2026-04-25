@@ -69,19 +69,19 @@ class OnboardActivity : ComponentActivity() {
 fun OnboardingScreen(onFinish: () -> Unit) {
     val pages = listOf(
         OnboardingPage(
-            imageRes = R.drawable.placeholder,
-            title = "Sistem Hukum,\nAkar Pendidikan",
-            description = "Ketimpangan pendidikan bukan sekadar kurangnya guru, tapi gejala dari sistem hukum yang perlu diperbaiki secara menyeluruh."
+            imageRes = R.drawable.placeholder, // Pastikan ganti sesuai asetmu
+            title = "Hukum Bukan Lagi\nLabirin Rumit",
+            description = "Pahami aturan main di Indonesia dengan cara yang seru. Kami menerjemahkan pasal kaku menjadi simulasi yang mudah dimengerti."
         ),
         OnboardingPage(
             imageRes = R.drawable.placeholder,
-            title = "Simulasi Dilema\nKeadilan Nyata",
-            description = "Hadapi skenario nyata dari data WJP 2025. Setiap keputusanmu akan menguji integritas, transparansi, dan kesetaraan hak."
+            title = "Tentukan Keadilan\ndi Tanganmu",
+            description = "Hadapi dilema hukum nyata. Setiap keputusanmu akan memengaruhi indeks Rule of Law: dari keterbukaan hingga hak asasi."
         ),
         OnboardingPage(
             imageRes = R.drawable.placeholder,
-            title = "Bangun Masa Depan\nIndonesia Emas",
-            description = "Pahami bahwa perlindungan hak asasi dan ketiadaan korupsi adalah kurikulum utama untuk mencapai keadilan bagi semua anak bangsa."
+            title = "Lihat Dampak\nSkor Nyatamu",
+            description = "Dapatkan rapor simulasi berdasarkan 4 Pilar WJP dan bandingkan dengan kasus nyata di lapangan. Siap jadi agen perubahan?"
         )
     )
 
@@ -161,7 +161,7 @@ fun OnboardingTopBar(onSkip: () -> Unit, showSkip: Boolean) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Edu Justice",
+            text = "EduJustice",
             color = BluePrimary,
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.ExtraBold,

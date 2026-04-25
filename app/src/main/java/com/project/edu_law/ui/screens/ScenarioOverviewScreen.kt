@@ -28,18 +28,19 @@ fun ScenarioOverviewScreen(
     viewModel: ScenarioViewModel = viewModel(),
     onStartSimulation: (String) -> Unit
 ) {
-    LaunchedEffect (scenarioId) {
+    LaunchedEffect(scenarioId) {
         scenarioId?.let { viewModel.getScenarioById(it) }
     }
 
     val scenario by viewModel.selectedScenario.collectAsState()
 
     Scaffold(
+        containerColor = Color.White,
         bottomBar = {
             if (scenario != null) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    shadowElevation = 8.dp,
+                    shadowElevation = 16.dp,
                     color = Color.White
                 ) {
                     Button(
@@ -51,14 +52,17 @@ fun ScenarioOverviewScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF004080)),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Mulai Simulasi Sekarang", color = Color.White)
+                        Text(
+                            text = "Masuk ke Skenario",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
                 }
             }
         }
     ) { padding ->
         if (scenario == null) {
-            // Loading state
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = Color(0xFF004080))
             }
@@ -67,39 +71,41 @@ fun ScenarioOverviewScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF8F9FA))
                     .padding(padding)
-                    .padding(24.dp)
+                    .padding(horizontal = 24.dp)
             ) {
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Text(
                     text = data.title,
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF004080)
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color(0xFF111827),
+                        lineHeight = 34.sp
                     )
                 )
 
                 Text(
-                    text = "Persiapan Simulasi",
+                    text = "Briefing Simulasi",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Gray,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     InfoBadge(
-                        label = "Kesulitan",
+                        label = "Kompleksitas",
                         value = data.difficulty,
                         icon = Icons.Default.BarChart,
                         modifier = Modifier.weight(1f)
                     )
                     InfoBadge(
-                        label = "Durasi",
+                        label = "Estimasi",
                         value = "${data.estimated_duration_minutes} Menit",
                         icon = Icons.Default.AccessTime,
                         modifier = Modifier.weight(1f)
@@ -108,42 +114,59 @@ fun ScenarioOverviewScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Peran Card
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)),
-                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFEEF2FF)),
+                    shape = RoundedCornerShape(20.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.Person, null, tint = Color(0xFF1976D2))
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(Color.White, RoundedCornerShape(12.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Default.Person, null, tint = Color(0xFF4338CA))
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
                         Column {
-                            Text("Bertindak Sebagai", style = MaterialTheme.typography.labelSmall)
-                            Text(data.character, fontWeight = FontWeight.Bold)
+                            Text(
+                                "Perspektif Peran",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Color(0xFF4338CA),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                data.character,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color(0xFF1E1B4B)
+                            )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                Text("Konteks Kasus", fontWeight = FontWeight.Bold)
+                Text(
+                    "Konteks Kasus",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 18.sp,
+                    color = Color(0xFF111827)
+                )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(1.dp)
-                ) {
-                    Text(
-                        text = data.context,
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 24.sp)
+                Text(
+                    text = data.context,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        lineHeight = 28.sp,
+                        color = Color(0xFF4B5563)
                     )
-                }
+                )
             }
         }
     }
@@ -159,17 +182,17 @@ fun InfoBadge(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        shape = RoundedCornerShape(20.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF3F4F6))
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Icon(icon, contentDescription = null, tint = Color(0xFF004080), modifier = Modifier.size(20.dp))
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-            Text(value, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+            Icon(icon, contentDescription = null, tint = Color(0xFF004080), modifier = Modifier.size(22.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(label, fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
+            Text(value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF111827))
         }
     }
 }

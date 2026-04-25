@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,8 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.project.edu_law.ui.navigation.Screen
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
-import com.project.edu_law.ui.theme.BluePrimary
-import com.project.edu_law.ui.theme.BlueSecondary
+import com.project.edu_law.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,36 +29,41 @@ fun GenerateScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-
     var selectedCharacter by remember { mutableStateOf("Orang Tua") }
-    var selectedDifficulty by remember { mutableStateOf("Medium") }
+    var selectedDifficulty by remember { mutableStateOf("Menengah") }
 
     val isGenerating by viewModel.isGenerating.collectAsState()
     val errorMessage by viewModel.generateError.collectAsState()
 
     val characters = listOf("Orang Tua", "Kepala Sekolah", "Pejabat Daerah")
-    val difficulties = listOf("Easy", "Medium", "Hard")
+    val difficulties = listOf("Mudah", "Menengah", "Sulit")
 
     Scaffold(
+        containerColor = White,
         topBar = {
             TopAppBar(
-                title = { Text("Generate Kasus Baru", fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        "Rancang Simulasi",
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = (-0.5).sp
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = BluePrimary
+                    containerColor = White,
+                    titleContentColor = DarkText
                 )
             )
         },
         bottomBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = Color.White,
-                shadowElevation = 16.dp
+                color = White,
+                shadowElevation = 20.dp
             ) {
                 Button(
                     onClick = {
-                        Toast.makeText(context, "AI sedang menulis cerita. Ini bisa memakan waktu hingga 5 menit, Anda boleh kembali ke menu utama.", Toast.LENGTH_LONG).show()
-
+                        Toast.makeText(context, "AI sedang merancang skenario hukum untukmu...", Toast.LENGTH_LONG).show()
                         viewModel.generateScenario(
                             difficulty = selectedDifficulty,
                             character = selectedCharacter,
@@ -74,17 +79,20 @@ fun GenerateScreen(
                         .fillMaxWidth()
                         .padding(24.dp)
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
-                    shape = RoundedCornerShape(28.dp)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BluePrimary,
+                        disabledContainerColor = GrayBorder
+                    ),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     if (isGenerating) {
-                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                        CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("AI Sedang Menulis...", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("Membuat Cerita...", fontWeight = FontWeight.Bold, color = White)
                     } else {
-                        Icon(Icons.Default.AutoAwesome, contentDescription = null)
+                        Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(20.dp), tint = White)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Generate Sekarang", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Generate Simulasi", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = White)
                     }
                 }
             }
@@ -93,28 +101,30 @@ fun GenerateScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF8F9FA))
                 .padding(padding)
-                .padding(24.dp)
+                .background(White)
+                .padding(horizontal = 24.dp)
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Buat Skenario Hukum Baru",
-                fontSize = 22.sp,
+                "Rancang Dilema Hukum",
+                fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color.Black
+                color = DarkText
             )
             Text(
-                "Pilih peran dan tingkat kesulitan untuk kasus yang akan di-generate oleh AI.",
+                "AI akan menciptakan simulasi unik berdasarkan parameter yang kamu tentukan.",
                 fontSize = 14.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
+                color = GrayText,
+                lineHeight = 20.sp,
+                modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
             )
 
-            Text("Pilih Peran Anda", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            SectionHeader(title = "Pilih Sudut Pandang")
             Spacer(modifier = Modifier.height(12.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 characters.forEach { char ->
-                    SelectionCard(
+                    CharacterSelectionCard(
                         text = char,
                         isSelected = selectedCharacter == char,
                         onClick = { selectedCharacter = char }
@@ -124,14 +134,14 @@ fun GenerateScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Text("Tingkat Kesulitan", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            SectionHeader(title = "Tingkat Kompleksitas")
             Spacer(modifier = Modifier.height(12.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 difficulties.forEach { diff ->
-                    SelectionCard(
+                    DifficultyChip(
                         text = diff,
                         isSelected = selectedDifficulty == diff,
                         onClick = { selectedDifficulty = diff },
@@ -142,15 +152,59 @@ fun GenerateScreen(
 
             if (errorMessage != null) {
                 Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = errorMessage!!,
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFFFFEBEE), RoundedCornerShape(8.dp))
-                        .padding(12.dp)
-                )
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF2F2)),
+                    border = BorderStroke(1.dp, Color(0xFFFCA5A5)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = errorMessage!!,
+                        color = Color(0xFF991B1B),
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SectionHeader(title: String) {
+    Text(
+        text = title,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        color = DarkText
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CharacterSelectionCard(text: String, isSelected: Boolean, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) BluePrimary else GrayBorder
+        ),
+        color = if (isSelected) BlueSecondary else White,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = text,
+                color = if (isSelected) BluePrimary else GrayText,
+                fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
+                fontSize = 15.sp
+            )
+            if (isSelected) {
+                Icon(Icons.Default.ChevronRight, null, tint = BluePrimary)
             }
         }
     }
@@ -158,25 +212,25 @@ fun GenerateScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectionCard(text: String, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun DifficultyChip(text: String, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(
-            width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected) BluePrimary else Color.LightGray
+            width = 1.dp,
+            color = if (isSelected) BluePrimary else GrayBorder
         ),
-        color = if (isSelected) BlueSecondary else Color.White,
-        modifier = modifier.fillMaxWidth()
+        color = if (isSelected) BluePrimary else White,
+        modifier = modifier
     ) {
         Box(
-            modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp),
+            modifier = Modifier.padding(vertical = 12.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = text,
-                color = if (isSelected) BluePrimary else Color.DarkGray,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                color = if (isSelected) White else GrayText,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                 fontSize = 14.sp
             )
         }

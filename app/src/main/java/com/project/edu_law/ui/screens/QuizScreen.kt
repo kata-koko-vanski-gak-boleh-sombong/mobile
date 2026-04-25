@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import com.project.edu_law.data.ScenarioData
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 import com.project.edu_law.ui.theme.*
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun QuizScreen(
@@ -48,7 +49,6 @@ fun QuizScreen(
     var currentMetrics by remember { mutableStateOf<ScenarioData.MetricsBaseline?>(null) }
     var selectedChoice by remember { mutableStateOf<ScenarioData.Node.Choice?>(null) }
     var showEnding by remember { mutableStateOf(false) }
-
     var isMetricsExpanded by remember { mutableStateOf(true) }
 
     val mainScrollState = rememberScrollState()
@@ -69,10 +69,8 @@ fun QuizScreen(
     }
 
     val node = currentNode!!
-
     val maxStep = 4f
     val currentStepProgress = (node.sequence_order / maxStep).coerceIn(0f, 1f)
-
     val animatedMainProgress by animateFloatAsState(
         targetValue = currentStepProgress,
         animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
@@ -80,8 +78,6 @@ fun QuizScreen(
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
-
-        // --- HALAMAN SOAL ---
         AnimatedVisibility(
             visible = !showEnding,
             exit = fadeOut(animationSpec = tween(300))
@@ -139,36 +135,26 @@ fun QuizScreen(
                         trackColor = GrayBorder
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
-
                     AnimatedVisibility(
                         visible = isMetricsExpanded,
-                        enter = expandVertically(animationSpec = tween(500)) + fadeIn(animationSpec = tween(500)),
-                        exit = shrinkVertically(animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
                     ) {
                         currentMetrics?.let { metrics ->
                             Card(
                                 colors = CardDefaults.cardColors(containerColor = Color.White),
                                 shape = RoundedCornerShape(16.dp),
                                 elevation = CardDefaults.cardElevation(2.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp)
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                             ) {
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp, horizontal = 8.dp),
-                                    horizontalArrangement = Arrangement.SpaceEvenly,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
-                                    LiveMetricItem(Icons.Default.Group, "Fundamental\nRights", metrics.fundamental_rights, Color(0xFF2E7D32))
-                                    Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
-                                    LiveMetricItem(Icons.Default.Gavel, "Criminal\nJustice", metrics.criminal_justice, Color(0xFF1565C0))
-                                    Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
-                                    LiveMetricItem(Icons.Default.AccountBalance, "Civil\nJustice", metrics.civil_justice, Color(0xFF6A1B9A))
-                                    Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
-                                    LiveMetricItem(Icons.Default.Security, "Corruption\nLevel", metrics.corruption, Color(0xFFC62828))
+                                    LiveMetricItem(Icons.Default.Group, "Rights", metrics.fundamental_rights, Color(0xFF2E7D32))
+                                    LiveMetricItem(Icons.Default.Gavel, "Criminal", metrics.criminal_justice, Color(0xFF1565C0))
+                                    LiveMetricItem(Icons.Default.AccountBalance, "Civil", metrics.civil_justice, Color(0xFF6A1B9A))
+                                    LiveMetricItem(Icons.Default.Security, "Corruption", metrics.corruption, Color(0xFFC62828))
                                 }
                             }
                         }
@@ -189,9 +175,7 @@ fun QuizScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // FIX: KEMBALI MENGGUNAKAN getSafeChoices() AGAR TIDAK BLANK
                     val safeChoices = node.getSafeChoices()
-
                     if (!node.is_end_node && safeChoices != null) {
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             safeChoices.forEach { choice ->
@@ -203,7 +187,6 @@ fun QuizScreen(
                             }
                         }
                     }
-
                     Spacer(modifier = Modifier.height(20.dp))
                 }
 
@@ -229,14 +212,10 @@ fun QuizScreen(
                                     if (nextNode != null) {
                                         currentNode = nextNode
                                         selectedChoice = null
-
                                         if (nextNode.is_end_node) {
                                             showEnding = true
-
                                             currentMetrics?.let { finalMetrics ->
-                                                // FIX: KEMBALI MENGGUNAKAN getSafeEndingData()
                                                 val safeNextEnding = nextNode.getSafeEndingData()
-
                                                 val historyItem = com.project.edu_law.data.entity.HistoryEntity(
                                                     scenarioId = scenarioId,
                                                     scenarioTitle = scenario?.title ?: "Unknown",
@@ -253,56 +232,31 @@ fun QuizScreen(
                                 }
                             },
                             enabled = selectedChoice != null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .height(56.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = BluePrimary,
-                                disabledContainerColor = GrayBorder
-                            ),
-                            shape = RoundedCornerShape(28.dp)
+                            modifier = Modifier.fillMaxWidth().padding(24.dp).height(58.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
+                            shape = RoundedCornerShape(16.dp)
                         ) {
-                            Text("Konfirmasi Keputusan", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                            Text("Konfirmasi Keputusan", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
                         }
                     }
                 }
             }
         }
 
-        // --- HALAMAN ENDING ---
-        // FIX: KEMBALI MENGGUNAKAN getSafeEndingData()
         val safeEndingData = node.getSafeEndingData()
-
         AnimatedVisibility(
             visible = showEnding && safeEndingData != null,
-            enter = slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500)),
+            enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn(),
             exit = fadeOut()
         ) {
             if (safeEndingData != null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color(0xFFF0FDF4))
-                        .statusBarsPadding()
-                ) {
+                Box(modifier = Modifier.fillMaxSize().background(Color(0xFFF0FDF4)).statusBarsPadding()) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(insightScrollState)
-                            .padding(24.dp),
+                        modifier = Modifier.fillMaxSize().verticalScroll(insightScrollState).padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            "SIMULASI SELESAI",
-                            fontWeight = FontWeight.Black,
-                            letterSpacing = 2.sp,
-                            color = Color(0xFF2E7D32),
-                            fontSize = 14.sp
-                        )
-
+                        Text("SIMULASI SELESAI", fontWeight = FontWeight.Black, letterSpacing = 2.sp, color = Color(0xFF2E7D32), fontSize = 14.sp)
                         Spacer(modifier = Modifier.height(16.dp))
-
                         Card(
                             colors = CardDefaults.cardColors(containerColor = Color.White),
                             shape = RoundedCornerShape(24.dp),
@@ -310,104 +264,64 @@ fun QuizScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.padding(24.dp)) {
-
                                 Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-
                                 Spacer(modifier = Modifier.height(12.dp))
-
-                                Text(
-                                    text = "${node.content.body}\n\nKesimpulan: ${safeEndingData.summary}",
-                                    fontSize = 14.sp,
-                                    color = Color.DarkGray,
-                                    lineHeight = 22.sp
-                                )
-
+                                Text(text = "${node.content.body}\n\nKesimpulan: ${safeEndingData.summary}", fontSize = 14.sp, color = Color.DarkGray, lineHeight = 22.sp)
                                 Spacer(modifier = Modifier.height(24.dp))
                                 Divider(color = GrayBorder)
                                 Spacer(modifier = Modifier.height(16.dp))
-
                                 Text("Skor Rule of Law Akhir:", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                                 Spacer(modifier = Modifier.height(16.dp))
-
                                 currentMetrics?.let { metrics ->
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceEvenly,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        LiveMetricItem(Icons.Default.Group, "Fundamental\nRights", metrics.fundamental_rights, Color(0xFF2E7D32))
-                                        LiveMetricItem(Icons.Default.Gavel, "Criminal\nJustice", metrics.criminal_justice, Color(0xFF1565C0))
-                                        LiveMetricItem(Icons.Default.AccountBalance, "Civil\nJustice", metrics.civil_justice, Color(0xFF6A1B9A))
-                                        LiveMetricItem(Icons.Default.Security, "Corruption\nLevel", metrics.corruption, Color(0xFFC62828))
+                                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                                        LiveMetricItem(Icons.Default.Group, "Rights", metrics.fundamental_rights, Color(0xFF2E7D32))
+                                        LiveMetricItem(Icons.Default.Gavel, "Criminal", metrics.criminal_justice, Color(0xFF1565C0))
+                                        LiveMetricItem(Icons.Default.AccountBalance, "Civil", metrics.civil_justice, Color(0xFF6A1B9A))
+                                        LiveMetricItem(Icons.Default.Security, "Corruption", metrics.corruption, Color(0xFFC62828))
                                     }
                                 }
-
                                 Spacer(modifier = Modifier.height(24.dp))
                                 Divider(color = GrayBorder)
                                 Spacer(modifier = Modifier.height(16.dp))
-
                                 Text("Real World Case", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(safeEndingData.real_world_case.detail, fontSize = 13.sp, color = GrayText)
-
                                 Spacer(modifier = Modifier.height(16.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                     InfoTag(Icons.Default.MenuBook, "Tahun", safeEndingData.real_world_case.year, Modifier.weight(1f))
                                     InfoTag(Icons.Default.Gavel, "Sumber", safeEndingData.real_world_case.source, Modifier.weight(1f))
                                 }
                             }
                         }
-
                         Spacer(modifier = Modifier.height(150.dp))
                     }
 
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .background(
-                                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, Color(0xFFF0FDF4), Color(0xFFF0FDF4))
-                                )
-                            )
-                            .padding(24.dp),
+                        modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Color.White).padding(24.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         OutlinedButton(
                             onClick = {
-                                // FIX: Menambahkan Base64.NO_PADDING agar URL Navigasi 100% tidak error/crash
-                                val bytes = safeEndingData.summary.toByteArray(Charsets.UTF_8)
+                                val bytes = safeEndingData.summary.toByteArray(StandardCharsets.UTF_8)
                                 val safeContext = Base64.encodeToString(bytes, Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING)
                                 navController.navigate("chat_ai/$safeContext")
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = Color.White,
-                                contentColor = BluePrimary
-                            ),
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
                             border = BorderStroke(2.dp, BluePrimary),
-                            shape = RoundedCornerShape(28.dp)
+                            shape = RoundedCornerShape(16.dp)
                         ) {
-                            Text("Tanya Pak Hukum", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                            Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Tanya Pak Hukum (AI)", fontWeight = FontWeight.Bold)
                         }
 
                         Button(
-                            onClick = {
-                                navController.popBackStack()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
+                            onClick = { navController.popBackStack() },
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
-                            shape = RoundedCornerShape(28.dp)
+                            shape = RoundedCornerShape(16.dp)
                         ) {
-                            Text("Selesai", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                            Text("Simpan & Selesai", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
                         }
                     }
                 }
@@ -424,38 +338,19 @@ fun LiveMetricItem(icon: ImageVector, label: String, value: Int, color: Color) {
         label = "miniProgressBar"
     )
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(76.dp)
-    ) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(76.dp)) {
         Icon(imageVector = icon, contentDescription = null, tint = color, modifier = Modifier.size(28.dp))
         Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = label,
-            fontSize = 10.sp,
-            color = color,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.SemiBold,
-            lineHeight = 12.sp,
-            modifier = Modifier.height(26.dp)
-        )
-
+        Text(text = label, fontSize = 10.sp, color = color, textAlign = TextAlign.Center, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(4.dp))
-
         Row(verticalAlignment = Alignment.Bottom) {
             Text(text = value.toString(), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1A1A1A))
             Text(text = "/100", fontSize = 10.sp, color = Color.Gray, modifier = Modifier.padding(bottom = 3.dp))
         }
-
         Spacer(modifier = Modifier.height(4.dp))
-
         LinearProgressIndicator(
             progress = { animatedMetricProgress },
-            modifier = Modifier
-                .height(4.dp)
-                .fillMaxWidth(0.8f)
-                .clip(RoundedCornerShape(2.dp)),
+            modifier = Modifier.height(4.dp).fillMaxWidth(0.8f).clip(CircleShape),
             color = color,
             trackColor = color.copy(alpha = 0.2f)
         )
@@ -467,61 +362,28 @@ fun OptionItem(choice: ScenarioData.Node.Choice, isSelected: Boolean, onClick: (
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(
-            width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected) BluePrimary else GrayBorder
-        ),
+        border = BorderStroke(width = if (isSelected) 2.dp else 1.dp, color = if (isSelected) BluePrimary else GrayBorder),
         color = if (isSelected) BlueSecondary else Color.White,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .background(if (isSelected) BluePrimary else Color.White)
-                    .border(1.dp, if (isSelected) BluePrimary else GrayBorder, CircleShape),
+                modifier = Modifier.size(24.dp).clip(CircleShape).background(if (isSelected) BluePrimary else Color.White).border(1.dp, if (isSelected) BluePrimary else GrayBorder, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                if (isSelected) {
-                    Box(Modifier.size(8.dp).clip(CircleShape).background(Color.White))
-                }
+                if (isSelected) Box(Modifier.size(8.dp).clip(CircleShape).background(Color.White))
             }
-
             Spacer(modifier = Modifier.width(16.dp))
-
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = choice.text,
-                    fontSize = 14.sp,
-                    color = if (isSelected) BluePrimary else Color.Black,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                    lineHeight = 20.sp
-                )
-
+                Text(text = choice.text, fontSize = 14.sp, color = if (isSelected) BluePrimary else Color.Black, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
                 val impact = choice.impact
                 if (impact.fundamental_rights != 0 || impact.criminal_justice != 0 || impact.civil_justice != 0 || impact.corruption != 0) {
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (impact.fundamental_rights != 0) {
-                            MiniImpactBadge(Icons.Default.Group, impact.fundamental_rights, Color(0xFF2E7D32))
-                        }
-                        if (impact.criminal_justice != 0) {
-                            MiniImpactBadge(Icons.Default.Gavel, impact.criminal_justice, Color(0xFF1565C0))
-                        }
-                        if (impact.civil_justice != 0) {
-                            MiniImpactBadge(Icons.Default.AccountBalance, impact.civil_justice, Color(0xFF6A1B9A))
-                        }
-                        if (impact.corruption != 0) {
-                            MiniImpactBadge(Icons.Default.Security, impact.corruption, Color(0xFFC62828))
-                        }
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (impact.fundamental_rights != 0) MiniImpactBadge(Icons.Default.Group, impact.fundamental_rights, Color(0xFF2E7D32))
+                        if (impact.criminal_justice != 0) MiniImpactBadge(Icons.Default.Gavel, impact.criminal_justice, Color(0xFF1565C0))
+                        if (impact.civil_justice != 0) MiniImpactBadge(Icons.Default.AccountBalance, impact.civil_justice, Color(0xFF6A1B9A))
+                        if (impact.corruption != 0) MiniImpactBadge(Icons.Default.Security, impact.corruption, Color(0xFFC62828))
                     }
                 }
             }
@@ -532,16 +394,11 @@ fun OptionItem(choice: ScenarioData.Node.Choice, isSelected: Boolean, onClick: (
 @Composable
 fun MiniImpactBadge(icon: ImageVector, value: Int, color: Color) {
     val displayValue = if (value > 0) "+$value" else value.toString()
-    val badgeBg = color.copy(alpha = 0.1f)
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clip(RoundedCornerShape(6.dp))
-            .background(badgeBg)
-            .padding(horizontal = 6.dp, vertical = 2.dp)
+        modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(color.copy(alpha = 0.1f)).padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
-        Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(10.dp))
+        Icon(icon, null, tint = color, modifier = Modifier.size(10.dp))
         Spacer(modifier = Modifier.width(3.dp))
         Text(text = displayValue, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = color)
     }
@@ -549,12 +406,7 @@ fun MiniImpactBadge(icon: ImageVector, value: Int, color: Color) {
 
 @Composable
 fun InfoTag(icon: ImageVector, label: String, value: String, modifier: Modifier) {
-    Surface(
-        modifier = modifier,
-        color = LightBlueBg,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, GrayBorder)
-    ) {
+    Surface(modifier = modifier, color = LightBlueBg, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, GrayBorder)) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(icon, null, modifier = Modifier.size(14.dp), tint = GrayText)

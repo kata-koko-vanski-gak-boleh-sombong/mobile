@@ -1,5 +1,6 @@
 package com.project.edu_law.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.project.edu_law.ui.navigation.Screen
 import com.project.edu_law.data.entity.ScenarioEntity
@@ -31,36 +33,39 @@ fun LegalScenarioScreen(
     viewModel: ScenarioViewModel
 ) {
     val scenarioList by viewModel.allScenarios.collectAsState()
+    var parentSize by remember { mutableStateOf(IntSize.Zero) }
 
-    Scaffold { padding ->
-        var parentSize by remember { mutableStateOf(IntSize.Zero) }
-
+    Scaffold(
+        containerColor = Color.White
+    ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .onSizeChanged { parentSize = it }
         ) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF8F9FA))
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 20.dp)
                     .padding(top = 16.dp)
             ) {
                 Text(
-                    text = "Legal Scenarios",
-                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color(0xFF004080)
+                    text = "Ruang Simulasi",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = (-0.5).sp
+                    ),
+                    color = Color(0xFF111827)
                 )
                 Text(
-                    text = "Uji pemahaman hukum Anda melalui simulasi kasus nyata.",
+                    text = "Uji integritasmu dalam menghadapi dilema hukum dan pilar keadilan.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    lineHeight = 20.sp
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 if (scenarioList.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -69,7 +74,7 @@ fun LegalScenarioScreen(
                 } else {
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = PaddingValues(top = 16.dp, bottom = 80.dp, start = 4.dp, end = 4.dp)
+                        contentPadding = PaddingValues(bottom = 80.dp)
                     ) {
                         items(
                             items = scenarioList,
@@ -91,9 +96,7 @@ fun LegalScenarioScreen(
             var fabSize by remember { mutableStateOf(IntSize.Zero) }
 
             ExtendedFloatingActionButton(
-                onClick = {
-                    navController.navigate(Screen.Generate.route)
-                },
+                onClick = { navController.navigate(Screen.Generate.route) },
                 containerColor = Color(0xFF004080),
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp),
@@ -105,18 +108,12 @@ fun LegalScenarioScreen(
                     .pointerInput(parentSize, fabSize) {
                         detectDragGestures { change, dragAmount ->
                             change.consume()
-
                             if (parentSize != IntSize.Zero && fabSize != IntSize.Zero) {
                                 val paddingPx = 32.dp.toPx()
-
                                 val minX = -(parentSize.width - fabSize.width - paddingPx)
                                 val minY = -(parentSize.height - fabSize.height - paddingPx)
-
-                                val newX = offsetX + dragAmount.x
-                                val newY = offsetY + dragAmount.y
-
-                                offsetX = newX.coerceIn(minX, 0f)
-                                offsetY = newY.coerceIn(minY, 0f)
+                                offsetX = (offsetX + dragAmount.x).coerceIn(minX, 0f)
+                                offsetY = (offsetY + dragAmount.y).coerceIn(minY, 0f)
                             }
                         }
                     }
@@ -133,15 +130,16 @@ fun ScenarioCard(
     onStartClick: () -> Unit
 ) {
     val (roleBgColor, roleTextColor) = when {
-        scenario.character.contains("Pemerintah", ignoreCase = true) -> Color(0xFF002366) to Color.White
-        scenario.character.contains("Masyarakat", ignoreCase = true) -> Color(0xFFE3F2FD) to Color(0xFF1976D2)
-        else -> Color(0xFFF5F5F5) to Color(0xFF424242)
+        scenario.character.contains("Pemerintah", ignoreCase = true) -> Color(0xFFEEF2FF) to Color(0xFF4338CA)
+        scenario.character.contains("Masyarakat", ignoreCase = true) -> Color(0xFFECFDF5) to Color(0xFF047857)
+        else -> Color(0xFFF9FAFB) to Color(0xFF4B5563)
     }
 
     Card(
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(1.dp, Color(0xFFF3F4F6)),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -152,43 +150,56 @@ fun ScenarioCard(
             ) {
                 Surface(
                     color = roleBgColor,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(100.dp)
                 ) {
                     Text(
-                        text = "Peran: ${scenario.character}",
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall.copy(
+                        text = scenario.character,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = roleTextColor
                         )
                     )
                 }
-                Icon(Icons.Default.Gavel, contentDescription = null, tint = Color.LightGray)
+                Icon(
+                    imageVector = Icons.Default.Gavel,
+                    contentDescription = null,
+                    tint = Color(0xFFD1D5DB),
+                    modifier = Modifier.size(20.dp)
+                )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = scenario.title,
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 28.sp
+                ),
+                color = Color(0xFF1F2937)
             )
 
             Text(
                 text = scenario.subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.DarkGray,
-                modifier = Modifier.padding(vertical = 8.dp)
+                color = Color(0xFF6B7280),
+                modifier = Modifier.padding(vertical = 12.dp),
+                maxLines = 2
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = onStartClick,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF004080)),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(text = "Lihat simulasi", color = Color.White)
+                Text(
+                    text = "Mulai Simulasi",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                )
             }
         }
     }
