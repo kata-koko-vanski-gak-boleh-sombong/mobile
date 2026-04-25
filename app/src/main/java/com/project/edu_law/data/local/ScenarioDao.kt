@@ -17,4 +17,7 @@ interface ScenarioDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertScenarios(scenarios: List<ScenarioEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertScenario(scenario: ScenarioEntity)
 }

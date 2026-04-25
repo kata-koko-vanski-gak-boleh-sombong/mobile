@@ -1,0 +1,960 @@
+{
+  "id": "a7f3c9d2-8b4e-4f1a-9c6d-2e5b8a1d3f7c",
+  "scenario_id": "scenario_002_manipulasi_ppdb",
+  "title": "Jalur Belakang PPDB",
+  "subtitle": "Antiga Integritas dan Tekanan Politik",
+  "character": "Kepala Sekolah",
+  "context": "Sebagai Kepala Sekolah favorit di kota besar, Anda menghadapi tekanan dari Pejabat Daerah untuk menerima anak kerabatnya yang nilainya di bawah ambang batas melalui jalur prestasi, menggeser siswa berprestasi dari keluarga miskin. Indeks Rule of Law yang lemah membuat risiko hukum terasa minim dibandingkan tekanan sosial-politik.",
+  "difficulty": "hard",
+  "estimated_duration_minutes": 8,
+  "metrics_baseline": {
+    "fundamental_rights": 47,
+    "criminal_justice": 38,
+    "civil_justice": 47,
+    "corruption": 42
+  },
+  "nodes": [
+    {
+      "id": "node_01_start",
+      "type": "decision",
+      "sequence_order": 1,
+      "is_start_node": true,
+      "is_end_node": false,
+      "content": {
+        "title": "Telepon dari Dinas",
+        "body": "Anda menerima telepon dari Kepala Dinas Pendidikan setempat. Ia meminta dengan halus agar 'Ananda X', anak seorang pejabat tinggi, diterima di sekolah Anda melalui jalur prestasi meskipun nilai rapornya tidak memenuhi syarat. Jika ditolak, ada ancaman audit mendadak terhadap dana BOS sekolah Anda tahun depan. Di sisi lain, ada siswa berprestasi dari keluarga prasejahterah yang siap mengisi kuota tersebut secara sah.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_01_patuh",
+          "text": "Menerima permintaan pejabat demi keamanan posisi dan sekolah.",
+          "next_node_id": "node_02_audit",
+          "choice_type": "risky",
+          "impact": {
+            "fundamental_rights": -10,
+            "criminal_justice": -5,
+            "civil_justice": -5,
+            "corruption": -15
+          },
+          "insight": {
+            "title": "Penyalahgunaan Wewenang",
+            "body": "Manipulasi PPDB melanggar asas kepastian hukum dan hak atas pendidikan yang adil. Ini adalah bentuk korupsi non-tunai (gratifikasi jabatan) yang sering luput dari jeratan hukum karena sulitnya pembuktian.",
+            "source": "UU No. 31 Tahun 1999 jo. UU No. 20 Tahun 2001 tentang Pemberantasan Tindak Pidana Korupsi"
+          }
+        },
+        {
+          "id": "choice_01_tolak",
+          "text": "Menolak dengan tegas berdasarkan aturan zonasi dan nilai akademik.",
+          "next_node_id": "node_02_tekanan",
+          "choice_type": "brave",
+          "impact": {
+            "fundamental_rights": 5,
+            "criminal_justice": 2,
+            "civil_justice": 5,
+            "corruption": 5
+          },
+          "insight": {
+            "title": "Supremasi Hukum",
+            "body": "Kepala sekolah memiliki kewajiban hukum untuk menegakkan aturan penerimaan siswa baru. Menolak intervensi politik adalah langkah awal memulihkan integritas sistem pendidikan.",
+            "source": "Permendikbudristek No. 1 Tahun 2021 tentang PPDB"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_02_audit",
+      "type": "decision",
+      "sequence_order": 2,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Audit Mendadak",
+        "body": "Sesuai 'isyarat', tim audit dari dinas datang seminggu kemudian. Mereka menemukan ketidaksesuaian administrasi kecil pada laporan pembelian ATK tahun lalu (kesalahan klaim 2 juta rupiah). Auditor memberi pilihan: 'Selesaikan secara kekeluargaan' (suap) atau proses administrasi diperpanjang hingga 3 bulan yang akan membekukan operasional sekolah.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_02_suap",
+          "text": "Memberikan uang 'damai' agar audit segera selesai.",
+          "next_node_id": "node_03_normalisasi",
+          "choice_type": "corrupt",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": -10,
+            "civil_justice": 0,
+            "corruption": -20
+          },
+          "insight": {
+            "title": "Siklus Korupsi",
+            "body": "Suap untuk menutupi kesalahan kecil justru menciptakan preseden buruk dan memperkuat jaringan korupsi sistemik di sektor pendidikan.",
+            "source": "Indeks Persepsi Korupsi Indonesia 2024"
+          }
+        },
+        {
+          "id": "choice_02_prosedur",
+          "text": "Menolak suap dan bersedia mengikuti prosedur perbaikan administrasi meski lama.",
+          "next_node_id": "node_03_krisis",
+          "choice_type": "ethical",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 5,
+            "civil_justice": 0,
+            "corruption": 10
+          },
+          "insight": {
+            "title": "Biaya Integritas",
+            "body": "Penegakan hukum sering kali membebani pihak yang jujur dengan birokrasi yang berbelit, sebuah paradoks dalam sistem hukum yang lemah.",
+            "source": "Laporan Tahunan KPK Sektor Pendidikan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_02_tekanan",
+      "type": "decision",
+      "sequence_order": 2,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Serangan Media dan Orang Tua",
+        "body": "Penolakan Anda memicu kemarahan pejabat tersebut. Anak pejabat yang ditolak mengeluh ke media bahwa sekolah diskriminatif. Sekelompok orang tua yang dihasut mulai демонстраsi di depan gerbang sekolah, menuntut kepala sekolah mundur karena dianggap tidak bisa melayani 'tamu istimewa'. Polisi datang namun tampak enggan bertindak melindungi sekolah.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_02_mundur",
+          "text": "Mengundurkan diri demi meredam konflik dan menyelamatkan nama baik sekolah.",
+          "next_node_id": "node_03_kekosongan",
+          "choice_type": "defeat",
+          "impact": {
+            "fundamental_rights": -5,
+            "criminal_justice": -5,
+            "civil_justice": -5,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Impunitas Elite",
+            "body": "Ketika hukum tidak mampu melindungi penegak aturan dari tekanan politik, maka impunitas bagi para pelanggar semakin kuat.",
+            "source": "World Justice Project Rule of Law Index 2025 - Constraints on Government Powers"
+          }
+        },
+        {
+          "id": "choice_02_lawan",
+          "text": "Tetap bertahan, memanggil pengacara LBH, dan klarifikasi fakta ke media.",
+          "next_node_id": "node_03_perjuangan",
+          "choice_type": "brave",
+          "impact": {
+            "fundamental_rights": 10,
+            "criminal_justice": 5,
+            "civil_justice": 10,
+            "corruption": 5
+          },
+          "insight": {
+            "title": "Literasi Hukum Publik",
+            "body": "Melawan ketidakadilan memerlukan dukungan masyarakat sipil dan pemahaman hukum yang kuat untuk membalikkan narasi publik.",
+            "source": "Peran LBH dalam Advokasi Pendidikan Inklusi"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_03_normalisasi",
+      "type": "decision",
+      "sequence_order": 3,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Budaya Baru",
+        "body": "Audit selesai berkat 'uang damai'. Pejabat itu puas, anaknya masuk. Namun, guru-guru mulai mengetahui isu ini. Seorang guru idealis mengajukan surat protes anonim tentang hilangnya meritokrasi. Anda harus memutuskan sikap terhadap guru tersebut.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_03_bungkam",
+          "text": "Memanggil guru tersebut dan memberinya teguran keras agar tutup mulut.",
+          "next_node_id": "node_04_kebisuan",
+          "choice_type": "authoritarian",
+          "impact": {
+            "fundamental_rights": -10,
+            "criminal_justice": 0,
+            "civil_justice": -5,
+            "corruption": -5
+          },
+          "insight": {
+            "title": "Pembungkaman Suara",
+            "body": "Menekan whistleblower di lingkungan pendidikan merusak fondasi demokrasi dan transparansi publik.",
+            "source": "UU No. 14 Tahun 2008 tentang Keterbukaan Informasi Publik"
+          }
+        },
+        {
+          "id": "choice_03_dengar",
+          "text": "Menerima masukan guru tersebut secara tertutup dan berjanji memperbaiki sistem internal.",
+          "next_node_id": "node_04_reformasi_internal",
+          "choice_type": "reformist",
+          "impact": {
+            "fundamental_rights": 5,
+            "criminal_justice": 0,
+            "civil_justice": 5,
+            "corruption": 5
+          },
+          "insight": {
+            "title": "Ruang Aman Internal",
+            "body": "Meskipun sistem eksternal korup, menjaga ruang diskusi kritis di internal sekolah adalah benteng terakhir moralitas.",
+            "source": "Studi Kasus Manajemen Sekolah Berintegritas"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_03_krisis",
+      "type": "decision",
+      "sequence_order": 3,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Operasional Terhambat",
+        "body": "Prosedur audit yang dipersulit membuat pencairan dana untuk gaji guru honorer tertunda 2 bulan. Guru honorer terancam mogok. Pejabat daerah menawarkan bantuan dana 'hibah pribadi' yang tidak tercatat jika Anda mau meloloskan 2 anak kerabat lainnya tahun depan.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_03_terima_hibah",
+          "text": "Menerima hibah terselubung itu demi membayar guru dan melanjutkan sekolah.",
+          "next_node_id": "node_04_jebakan",
+          "choice_type": "desperate",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": -10,
+            "civil_justice": 0,
+            "corruption": -15
+          },
+          "insight": {
+            "title": "Jeratan Utang Budi",
+            "body": "Bantuan informal yang tidak transparan adalah alat kontrol politik yang efektif untuk melanggengkan praktik korupsi di masa depan.",
+            "source": "Analisis Gratifikasi dalam Sektor Publik"
+          }
+        },
+        {
+          "id": "choice_03_galang_dana",
+          "text": "Menolak hibah, membuka donasi publik transparan, dan menjelaskan situasi sebenarnya kepada wali murid.",
+          "next_node_id": "node_04_solidaritas",
+          "choice_type": "transparent",
+          "impact": {
+            "fundamental_rights": 10,
+            "criminal_justice": 5,
+            "civil_justice": 5,
+            "corruption": 10
+          },
+          "insight": {
+            "title": "Akuntabilitas Publik",
+            "body": "Keterbukaan informasi dapat mengubah krisis menjadi momentum gotong royong masyarakat, mengurangi ketergantungan pada oknum pejabat.",
+            "source": "Prinsip Tata Kelola Pemerintahan yang Baik (Good Governance)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_03_kekosongan",
+      "type": "decision",
+      "sequence_order": 3,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Vakum Kepemimpinan",
+        "body": "Anda mengundurkan diri. Pengganti Anda adalah orang titipan dinas yang langsung mengubah aturan sekolah menjadi sangat longgar untuk mengakomodasi berbagai kepentingan politik. Siswa miskin yang seharusnya masuk kini tersingkir sepenuhnya.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_03_diam",
+          "text": "Diam saja, Anda sudah tidak punya wewenang lagi.",
+          "next_node_id": "node_04_apati",
+          "choice_type": "passive",
+          "impact": {
+            "fundamental_rights": -10,
+            "criminal_justice": 0,
+            "civil_justice": -5,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Apati Sipil",
+            "body": "Ketika individu baik menyerah, sistem buruk akan mengisi kekosongan tanpa hambatan.",
+            "source": "Teori Jendela Pecah (Broken Windows Theory) dalam Hukum"
+          }
+        },
+        {
+          "id": "choice_03_lapor_kpk",
+          "text": "Mengumpulkan bukti selama menjabat dan melaporkannya ke KPK sebagai warga negara.",
+          "next_node_id": "node_04_pelaporan",
+          "choice_type": "activist",
+          "impact": {
+            "fundamental_rights": 15,
+            "criminal_justice": 10,
+            "civil_justice": 5,
+            "corruption": 15
+          },
+          "insight": {
+            "title": "Peran Whistleblower",
+            "body": "Laporan masyarakat adalah sumber utama terbongkarnya kasus korupsi besar di Indonesia, meski risikonya tinggi.",
+            "source": "Statistik Penanganan Laporan Masyarakat KPK"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_03_perjuangan",
+      "type": "decision",
+      "sequence_order": 3,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Dukungan Muncul",
+        "body": "Klarifikasi Anda didukung oleh organisasi orang tua dan media nasional. Pejabat tersebut mulai terpojok. Namun, ia mencoba melakukan pendekatan terakhir: menawarkan proyek renovasi gedung sekolah senilai miliaran rupiah dengan markup harga, asalkan Anda diam soal kasus PPDB tadi.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_03_terima_proyek",
+          "text": "Menerima proyek renovasi untuk fasilitas sekolah yang lebih baik, tutup mulut soal PPDB.",
+          "next_node_id": "node_04_kompromi",
+          "choice_type": "pragmatic_corrupt",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": -15,
+            "civil_justice": 0,
+            "corruption": -20
+          },
+          "insight": {
+            "title": "Korupsi Berkedok Pembangunan",
+            "body": "Seringkali pelanggaran hukum dibenarkan dengan alasan 'hasil akhir yang baik' (fasilitas), padahal prosesnya merusak sistem peradilan.",
+            "source": "Modus Operandi Korupsi Pengadaan Barang Jasa"
+          }
+        },
+        {
+          "id": "choice_03_tolak_total",
+          "text": "Menolak mentah-mentah dan mendesak inspektorat daerah mengusut tuntas kasus manipulasi PPDB ini.",
+          "next_node_id": "node_04_penuntutan",
+          "choice_type": "principled",
+          "impact": {
+            "fundamental_rights": 15,
+            "criminal_justice": 15,
+            "civil_justice": 10,
+            "corruption": 20
+          },
+          "insight": {
+            "title": "Integritas Total",
+            "body": "Penegakan hukum yang efektif membutuhkan konsistensi menolak segala bentuk kompromi, bahkan yang tampak menguntungkan secara materi.",
+            "source": "Konsep Integritas Sektor Publik OECD"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_kebisuan",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Sekolah Bisu",
+        "body": "Guru tersebut takut dan diam. Sekolah berjalan normal secara administratif, tapi moral guru hancur. Tahun depan, 5 anak pejabat masuk tanpa seleksi. Siswa pintar dari kalangan miskin hanya tinggal 10% dari total murid.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_lanjut",
+          "text": "Melanjutkan kepemimpinan dengan status quo ini.",
+          "next_node_id": "node_05_final_decay",
+          "choice_type": "status_quo",
+          "impact": {
+            "fundamental_rights": -5,
+            "criminal_justice": 0,
+            "civil_justice": -5,
+            "corruption": -5
+          },
+          "insight": {
+            "title": "Normalisasi Deviasi",
+            "body": "Ketika penyimpangan dibiarkan berulang, ia menjadi norma baru yang sulit diubah kembali.",
+            "source": "Sosiologi Hukum Pendidikan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_reformasi_internal",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Benteng Kecil",
+        "body": "Anda membentuk tim transparansi internal. Meskipun anak pejabat tetap masuk (karena tekanan eksternal tak terhindarkan), Anda memastikan sisa kuota diisi murni berdasarkan prestasi dan bantuan untuk siswa miskin dimaksimalkan lewat dana komite yang diaudit mandiri.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_konsolidasi",
+          "text": "Fokus memperkuat sistem internal sambil menunggu momen perubahan politik.",
+          "next_node_id": "node_05_final_resilience",
+          "choice_type": "strategic",
+          "impact": {
+            "fundamental_rights": 5,
+            "criminal_justice": 0,
+            "civil_justice": 5,
+            "corruption": 5
+          },
+          "insight": {
+            "title": "Resiliensi Institusi",
+            "body": "Dalam sistem hukum yang lemah, institusi pendidikan harus membangun mekanisme pertahanan sendiri (self-correction mechanism).",
+            "source": "Best Practices School Governance in Developing Countries"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_jebakan",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Terjerat Hutang Budi",
+        "body": "Dana hibah menyelamatkan sekolah bulan ini. Tapi bulan depan, pejabat meminta Anda memalsukan data kehadiran siswa untuk proyek fiktif. Jika menolak, dana sebelumnya akan diminta kembali dan Anda bisa dipidanakan.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_turut",
+          "text": "Memalsukan data demi keselamatan diri.",
+          "next_node_id": "node_05_final_criminal",
+          "choice_type": "criminal",
+          "impact": {
+            "fundamental_rights": -10,
+            "criminal_justice": -20,
+            "civil_justice": -10,
+            "corruption": -20
+          },
+          "insight": {
+            "title": "Eskalasi Kejahatan",
+            "body": "Satu langkah korupsi kecil sering kali memaksa pelaku melakukan kejahatan yang lebih besar untuk menutupinya.",
+            "source": "Psikologi Kriminalitas Kerah Putih"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_solidaritas",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Kekuatan Komunitas",
+        "body": "Donasi mengalir deras. Wali murid marah mengetahui ulah pejabat dan menekan dinas pendidikan. Audit akhirnya cair juga karena sorotan publik. Sekolah selamat tanpa hutang budi.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_institusionalisasi",
+          "text": "Membuat peraturan sekolah baru yang mewajibkan transparansi dana dan melibatkan perwakilan orang tua dalam pengawasan.",
+          "next_node_id": "node_05_final_democratic",
+          "choice_type": "systemic_change",
+          "impact": {
+            "fundamental_rights": 15,
+            "criminal_justice": 10,
+            "civil_justice": 15,
+            "corruption": 15
+          },
+          "insight": {
+            "title": "Partisipasi Publik",
+            "body": "Pengawasan masyarakat (social control) adalah elemen kunci dalam penegakan rule of law di tingkat akar rumput.",
+            "source": "UU No. 25 Tahun 2009 tentang Pelayanan Publik"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_apati",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Sekolah Menjadi Bisnis",
+        "body": "Tanpa pengawasan, sekolah berubah menjadi tempat transaksi jual beli kursi. Pendidikan berkualitas hanya untuk yang bayar mahal atau punya koneksi.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_observes",
+          "text": "Hanya mengamati dari jauh sebagai mantan kepala sekolah.",
+          "next_node_id": "node_05_final_tragedy",
+          "choice_type": "observer",
+          "impact": {
+            "fundamental_rights": -15,
+            "criminal_justice": -5,
+            "civil_justice": -10,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Tragedi Bersama",
+            "body": "Ketidakpedulian terhadap runtuhnya institusi publik pada akhirnya merugikan seluruh lapisan masyarakat, termasuk kelas menengah.",
+            "source": "Laporan Kemerosotan Kualitas Pendidikan Nasional 2025"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_pelaporan",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Proses Hukum Dimulai",
+        "body": "Laporan Anda ditindaklanjuti. Penyidik memanggil pejabat tersebut. Namun, Anda mendapat teror ancaman fisik terhadap keluarga. Perlindungan saksi dari negara sangat lambat.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_mundur_lapor",
+          "text": "Menarik laporan karena takut ancaman fisik.",
+          "next_node_id": "node_05_final_fear",
+          "choice_type": "fearful",
+          "impact": {
+            "fundamental_rights": -10,
+            "criminal_justice": -15,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Lemahnya Perlindungan Saksi",
+            "body": "Sistem perlindungan saksi dan korban di Indonesia masih belum memadai, menghambat penegakan hukum kasus korupsi berisiko tinggi.",
+            "source": "Evaluasi Kinerja LPSK 2025"
+          }
+        },
+        {
+          "id": "choice_04_tetap_lapor",
+          "text": "Tetap pada pendirian, pindah sementara keluarga ke tempat aman, dan terus kooperatif dengan penyidik.",
+          "next_node_id": "node_05_final_justice",
+          "choice_type": "heroic",
+          "impact": {
+            "fundamental_rights": 20,
+            "criminal_justice": 20,
+            "civil_justice": 10,
+            "corruption": 20
+          },
+          "insight": {
+            "title": "Harga Sebuah Keadilan",
+            "body": "Penegakan hukum sering menuntut pengorbanan personal yang besar dari para pencari keadilan di negara dengan rule of law rendah.",
+            "source": "Kasus-Kasus Whistleblower Pendidikan di Indonesia"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_kompromi",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Gedung Baru, Hati Keropos",
+        "body": "Sekolah memiliki gedung megah hasil markup proyek. Pejabat aman dari kasus PPDB. Namun, guru-guru tahu asal-usul gedung itu dan merasa malu mengajar di sana. Reputasi akademik sekolah menurun drastis.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_pertahankan",
+          "text": "Nikmati fasilitas baru dan abaikan gosip guru.",
+          "next_node_id": "node_05_final_hollow",
+          "choice_type": "materialistic",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": -10,
+            "civil_justice": -5,
+            "corruption": -10
+          },
+          "insight": {
+            "title": "Infrastruktur vs Integritas",
+            "body": "Pembangunan fisik tanpa landasan hukum yang bersih hanya menghasilkan infrastruktur yang rapuh secara moral.",
+            "source": "Indeks Pembangunan Manusia vs Indeks Rule of Law"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_04_penuntutan",
+      "type": "decision",
+      "sequence_order": 4,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Vonis Contoh",
+        "body": "Inspektorat menemukan bukti kuat. Pejabat tersebut resmi menjadi tersangka. Nama sekolah Anda menjadi simbol perlawanan terhadap ketidakadilan. Banyak sekolah lain mulai berani menolak intervensi serupa.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_04_konsisten",
+          "text": "Menjaga konsistensi aturan sekolah dan mendampingi proses hukum hingga vonis inkrah.",
+          "next_node_id": "node_05_final_victory",
+          "choice_type": "victorious",
+          "impact": {
+            "fundamental_rights": 20,
+            "criminal_justice": 25,
+            "civil_justice": 15,
+            "corruption": 25
+          },
+          "insight": {
+            "title": "Efek Jera",
+            "body": "Satu kasus yang dituntaskan dengan benar dapat menciptakan efek jera dan mengubah budaya hukum di lingkup yang lebih luas.",
+            "source": "Teori Pemidanaan dan Pencegahan Korupsi"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_decay",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Akhir yang Suram",
+        "body": "Sekolah Anda kini dikenal sebagai 'Sekolah Anak Pejabat'. Kualitas lulusan turun karena banyak yang masuk tanpa kemampuan dasar. Hukum telah kalah oleh kekuasaan.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_bad",
+          "text": "Terima kenyataan pahit ini.",
+          "next_node_id": "ending_total_failure",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Kegagalan Sistemik",
+            "body": "Tanpa penegakan hukum yang adil, pendidikan bukan lagi tangga mobilitas sosial, melainkan alat reproduksi ketimpangan.",
+            "source": "WJP Rule of Law Index 2025: Fundamental Rights"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_resilience",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Oase di Tengah Gurun",
+        "body": "Sekolah Anda mungkin tidak sempurna, tetapi menjadi satu-satunya tempat di mana meritokrasi masih dihargai. Anda berhasil menyelamatkan sebagian kecil keadilan di tengah sistem yang rusak.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_neutral",
+          "text": "Bangga dengan perjuangan kecil ini.",
+          "next_node_id": "ending_partial_success",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Perubahan Bertahap",
+            "body": "Reformasi hukum sering dimulai dari inisiatif lokal yang konsisten sebelum diadopsi menjadi kebijakan nasional.",
+            "source": "Studi Perubahan Sosial Hukum"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_criminal",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Jeruji Besi",
+        "body": "Kasus pemalsuan data terbongkar. Anda dan pejabat tersebut ditangkap. Sekolah ditutup sementara. Masa depan hancur karena serangkaian keputusan salah yang dimulai dari ketakutan.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_prison",
+          "text": "Menanggung konsekuensi hukum.",
+          "next_node_id": "ending_legal_consequence",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Hukum Pasti",
+            "body": "Pada akhirnya, hukum bisa saja terlambat, tetapi ketika terbukti, konsekuensinya tetap nyata bagi pelakunya.",
+            "source": "KUHP dan UU Tipikor"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_democratic",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Model Sekolah Demokratis",
+        "body": "Sekolah Anda menjadi percontohan nasional tentang tata kelola yang transparan dan partisipatif. Tekanan politik tidak lagi mempan karena seluruh komunitas sekolah bersatu.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_good",
+          "text": "Nikmati hasil kerja keras membangun sistem yang kuat.",
+          "next_node_id": "ending_systemic_success",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Pemberdayaan Masyarakat",
+            "body": "Rule of Law yang kuat dibangun dari partisipasi aktif masyarakat dalam mengawasi penyelenggaraan publik.",
+            "source": "Konsep Civil Society dalam Demokrasi"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_tragedy",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Hilangnya Harapan",
+        "body": "Anda melihat dari jauh bagaimana sekolah bekas Anda kini penuh dengan siswa titipan. Anak-anak cerdas dari keluarga miskin di sekitar sekolah tidak punya kesempatan lagi.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_regret",
+          "text": "Menyesal telah memilih jalan pintas di masa lalu.",
+          "next_node_id": "ending_social_tragedy",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Dampak Jangka Panjang",
+            "body": "Ketidakadilan pendidikan hari ini adalah bom waktu bagi ketidakstabilan sosial di masa depan.",
+            "source": "Laporan Bank Dunia tentang Pendidikan dan Ketimpangan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_fear",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Kemenangan Impunitas",
+        "body": "Laporan ditarik. Pejabat itu bebas dan semakin berkuasa. Anda hidup dalam ketakutan terus-menerus. Sistem hukum terbukti tidak mampu melindungi pencari keadilan.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_fear",
+          "text": "Hidup dalam bayang-bayang ketakutan.",
+          "next_node_id": "ending_impunity_wins",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Budaya Takut",
+            "body": "Ketika hukum gagal memberikan rasa aman, masyarakat akan memilih diam dan membiarkan korupsi merajalela.",
+            "source": "Survei Keamanan Warga Negara Indonesia 2025"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_justice",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Fajar Keadilan",
+        "body": "Pejabat divonis penjara. Anda mendapatkan penghargaan sebagai pejuang anti-korupsi. Meski lelah, Anda membuktikan bahwa hukum masih bisa ditegakkan jika ada keberanian.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_justice",
+          "text": "Merayakan kemenangan kecil bagi keadilan.",
+          "next_node_id": "ending_justice_served",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Harapan Rule of Law",
+            "body": "Setiap kasus yang berhasil ditangani adalah batu bata untuk membangun tembok penegakan hukum yang lebih kokoh di masa depan.",
+            "source": "Indeks Rule of Law WJP 2025 - Criminal Justice"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_hollow",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Kemewahan Semu",
+        "body": "Gedung megah berdiri, tapi jiwa sekolah mati. Tidak ada lagi kepercayaan antara guru, siswa, dan orang tua. Pendidikan telah menjadi komoditas bisnis kotor.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_hollow",
+          "text": "Menerima kegagalan moral ini.",
+          "next_node_id": "ending_moral_bankruptcy",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Krisis Kepercayaan",
+            "body": "Korupsi tidak hanya mencuri uang, tetapi juga menghancurkan kepercayaan publik yang merupakan modal utama bangsa.",
+            "source": "Forum Ekonomi Global tentang Kepercayaan Publik"
+          }
+        }
+      ]
+    },
+    {
+      "id": "node_05_final_victory",
+      "type": "decision",
+      "sequence_order": 5,
+      "is_start_node": false,
+      "is_end_node": false,
+      "content": {
+        "title": "Revolusi Putih",
+        "body": "Kasus Anda memicu gerakan nasional pembersihan PPDB di seluruh provinsi. Menteri Pendidikan merevisi aturan untuk menutup celah hukum. Anda adalah katalisator perubahan besar.",
+        "audio_url": ""
+      },
+      "choices": [
+        {
+          "id": "choice_05_end_legend",
+          "text": "Saksikan perubahan sistemik yang Anda mulai.",
+          "next_node_id": "ending_national_impact",
+          "choice_type": "final",
+          "impact": {
+            "fundamental_rights": 0,
+            "criminal_justice": 0,
+            "civil_justice": 0,
+            "corruption": 0
+          },
+          "insight": {
+            "title": "Dampak Sistemik",
+            "body": "Satu tindakan berani yang didukung hukum dapat memicu reformasi struktural di tingkat nasional.",
+            "source": "Sejarah Reformasi Hukum di Indonesia"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ending_total_failure",
+      "type": "ending",
+      "sequence_order": 6,
+      "is_start_node": false,
+      "is_end_node": true,
+      "content": {
+        "title": "Runtuhnya Meritokrasi",
+        "body": "Skor Rule of Law Anda anjlok. Sekolah menjadi sarang nepotisme. Siswa berprestasi dari kalangan miskin putus asa. Ini adalah gambaran nyata jika penegakan hukum terus dibiarkan lemah.",
+        "audio_url": ""
+      },
+      "choices": [],
+      "ending_data": {
+        "ending_code": "E01",
+        "ending_type": "bad",
+        "final_metrics": {
+          "fundamental_rights": 20,
+          "criminal_justice": 25,
+          "civil_justice": 25,
+          "corruption": 15
+        },
+        "summary": "Ketika hukum tunduk pada kekuasaan, pendidikan kehilangan fungsinya sebagai penyeimbang sosial.",
+        "real_world_case": {
+          "title": "Skandal Jual Beli Kursi Sekolah Favorit",
+          "year": "2024",
+          "source": "Investigasi Tempo",
+          "detail": "Temuan praktik jual beli kursi di beberapa SMA favorit di Jakarta dengan modus jalur prestasi palsu.",
+          "url": "https://tempo.co"
+        }
+      }
+    },
+    {
+      "id": "ending_systemic_success",
+      "type": "ending",
+      "sequence_order": 7,
+      "is_start_node": false,
+      "is_end_node": true,
+      "content": {
+        "title": "Benteng Keadilan",
+        "body": "Skor Rule of Law Anda meningkat signifikan. Sekolah Anda menjadi bukti bahwa integritas bisa menang meski dalam sistem yang sulit. Akses pendidikan yang adil terjaga.",
+        "audio_url": ""
+      },
+      "choices": [],
+      "ending_data": {
+        "ending_code": "E02",
+        "ending_type": "good",
+        "final_metrics": {
+          "fundamental_rights": 75,
+          "criminal_justice": 65,
+          "civil_justice": 70,
+          "corruption": 80
+        },
+        "summary": "Kepemimpinan yang berintegritas dan partisipasi publik adalah kunci memperbaiki indeks Rule of Law di sektor pendidikan.",
+        "real_world_case": {
+          "title": "Sekolah Adhiyatama Award",
+          "year": "2025",
+          "source": "Kemdikbudristek",
+          "detail": "Penghargaan bagi sekolah yang berhasil menerapkan sistem PPDB transparan dan bebas dari intervensi politik.",
+          "url": "https://kemdikbud.go.id"
+        }
+      }
+    }
+  ]
+}

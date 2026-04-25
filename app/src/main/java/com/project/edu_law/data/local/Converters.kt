@@ -9,6 +9,13 @@ class Converters {
     private val gson = Gson()
 
     @TypeConverter
+    fun fromMetrics(value: ScenarioData.MetricsBaseline): String = gson.toJson(value)
+
+    @TypeConverter
+    fun toMetrics(value: String): ScenarioData.MetricsBaseline =
+        gson.fromJson(value, ScenarioData.MetricsBaseline::class.java)
+
+    @TypeConverter
     fun fromNodeList(value: List<ScenarioData.Node>): String = gson.toJson(value)
 
     @TypeConverter
@@ -16,10 +23,4 @@ class Converters {
         val listType = object : TypeToken<List<ScenarioData.Node>>() {}.type
         return gson.fromJson(value, listType)
     }
-
-    @TypeConverter
-    fun fromMetrics(value: ScenarioData.MetricsBaseline): String = gson.toJson(value)
-
-    @TypeConverter
-    fun toMetrics(value: String): ScenarioData.MetricsBaseline = gson.fromJson(value, ScenarioData.MetricsBaseline::class.java)
 }
