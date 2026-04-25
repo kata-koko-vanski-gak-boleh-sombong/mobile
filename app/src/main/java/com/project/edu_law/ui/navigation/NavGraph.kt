@@ -19,6 +19,9 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
         modifier = Modifier.padding(paddingValues)
     ) {
         composable(Screen.Home.route) { HomeScreen() }
-        composable(Screen.Scenario.route) { LegalScenarioScreen() }
+        composable(Screen.Scenario.route) {
+            LegalScenarioScreen(navController = navController)
+        }
+        composable(Screen.Simulation.route) { QuizScreen() }
     }
 }

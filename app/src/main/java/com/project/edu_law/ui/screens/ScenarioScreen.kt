@@ -36,9 +36,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.project.edu_law.ui.navigation.Screen
 
 @Composable
-fun LegalScenarioScreen() {
+fun LegalScenarioScreen(navController: NavHostController) {
     Scaffold (
     ) { padding ->
         Column (
@@ -66,7 +68,12 @@ fun LegalScenarioScreen() {
                 contentPadding = PaddingValues(vertical = 16.dp, horizontal = 4.dp)
             ) {
                 items(scenarios.size) { index ->
-                    ScenarioCard(scenarios[index])
+                    ScenarioCard(
+                        scenario = scenarios[index],
+                        onStartClick = {
+                            navController.navigate(Screen.Simulation.route)
+                        }
+                    )
                 }
             }
         }
@@ -74,7 +81,10 @@ fun LegalScenarioScreen() {
 }
 
 @Composable
-fun ScenarioCard(scenario: LegalScenario) {
+fun ScenarioCard(
+    scenario: LegalScenario,
+    onStartClick: () -> Unit
+) {
     Card (
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -120,10 +130,10 @@ fun ScenarioCard(scenario: LegalScenario) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button (
-                onClick = { },
+                onClick = onStartClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF004080)),
-                shape = RoundedCornerShape(12.dp) // Konsisten dengan gaya badge
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text(text = scenario.buttonText, color = Color.White)
             }
@@ -134,9 +144,9 @@ fun ScenarioCard(scenario: LegalScenario) {
 data class LegalScenario(
     val title: String,
     val description: String,
-    val role: String, // Mengganti pov
+    val role: String,
     val roleColor: Color,
-    val contentColor: Color, // Tambahan agar teks di dalam badge kontras
+    val contentColor: Color,
     val buttonText: String,
     val icon: ImageVector
 )
