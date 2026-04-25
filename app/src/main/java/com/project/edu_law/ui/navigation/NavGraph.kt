@@ -25,7 +25,9 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
 
     val database = remember { AppDatabase.getDatabase(context, scope) }
     val scenarioDao = database.scenarioDao()
-    val repository = remember { ScenarioRepository(scenarioDao) }
+    val historyDao = database.historyDao()
+
+    val repository = remember { ScenarioRepository(scenarioDao, historyDao) }
 
     NavHost(
         navController = navController,

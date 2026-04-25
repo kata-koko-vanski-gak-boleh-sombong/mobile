@@ -9,22 +9,23 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.project.edu_law.data.ScenarioData
+import com.project.edu_law.data.entity.HistoryEntity
 import com.project.edu_law.data.entity.ScenarioEntity
 import com.project.edu_law.data.entity.toEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [ScenarioEntity::class], version = 1)
+@Database(entities = [ScenarioEntity::class, HistoryEntity::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun scenarioDao(): ScenarioDao
+    abstract fun historyDao(): HistoryDao
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        // Pastikan signature-nya seperti ini:
         fun getDatabase(context: Context, scope: CoroutineScope): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -32,7 +33,8 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "edu_law_db"
                 )
-                    .addCallback(AppDatabaseCallback(context, scope)) // Scope ini diteruskan ke callback
+                    .fallbackToDestructiveMigration()
+                    .addCallback(AppDatabaseCallback(context, scope))
                     .build()
                 INSTANCE = instance
                 instance
@@ -41,7 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     private class AppDatabaseCallback(
-        private val context: Context, // Kita butuh context untuk buka assets
+        private val context: Context,
         private val scope: CoroutineScope
     ) : RoomDatabase.Callback() {
 
@@ -49,8 +51,6 @@ abstract class AppDatabase : RoomDatabase() {
             super.onCreate(db)
             Log.d("DB_SEED", "onCreate Database terpanggil!")
 
-            // Jangan pakai INSTANCE? di sini karena mungkin belum fully initialized
-            // Kita gunakan scope dan akses database dari provider
             scope.launch(Dispatchers.IO) {
                 INSTANCE?.let { database ->
                     populateDatabase(database.scenarioDao())
