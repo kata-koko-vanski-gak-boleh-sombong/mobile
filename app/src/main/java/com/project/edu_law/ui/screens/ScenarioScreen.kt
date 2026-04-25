@@ -15,11 +15,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.project.edu_law.data.ScenarioData
 import com.project.edu_law.ui.navigation.Screen
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.project.edu_law.data.entity.ScenarioEntity
+import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 
 @Composable
-fun LegalScenarioScreen(navController: NavHostController, scenarioList: List<ScenarioData>) {
+fun LegalScenarioScreen(
+    navController: NavHostController,
+    viewModel: ScenarioViewModel = viewModel()
+) {
+    val scenarioList by viewModel.allScenarios.collectAsState()
+
     Scaffold { padding ->
         Column(
             modifier = Modifier
@@ -41,17 +50,26 @@ fun LegalScenarioScreen(navController: NavHostController, scenarioList: List<Sce
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 4.dp)
-            ) {
-                items(scenarioList) { scenario ->
-                    ScenarioCard(
-                        scenario = scenario,
-                        onStartClick = {
-                            navController.navigate(Screen.Simulation.route)
-                        }
-                    )
+            if (scenarioList.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Belum ada skenario tersedia", color = Color.Gray)
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp, horizontal = 4.dp)
+                ) {
+                    items(
+                        items = scenarioList,
+                        key = { it.id }
+                    ) { scenario ->
+                        ScenarioCard(
+                            scenario = scenario,
+                            onStartClick = {
+                                navController.navigate("${Screen.ScenarioOverview.route}/${scenario.id}")
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -60,7 +78,7 @@ fun LegalScenarioScreen(navController: NavHostController, scenarioList: List<Sce
 
 @Composable
 fun ScenarioCard(
-    scenario: ScenarioData,
+    scenario: ScenarioEntity,
     onStartClick: () -> Unit
 ) {
     val (roleBgColor, roleTextColor) = when {
@@ -119,7 +137,7 @@ fun ScenarioCard(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF004080)),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(text = "Mulai simulasi", color = Color.White)
+                Text(text = "Lihat simulasi", color = Color.White)
             }
         }
     }

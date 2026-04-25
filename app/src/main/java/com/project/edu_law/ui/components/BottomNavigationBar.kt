@@ -67,7 +67,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = Color.Transparent, // Menghilangkan pill background saat dipilih
+                        indicatorColor = Color.Transparent,
                         selectedIconColor = BluePrimary,
                         unselectedIconColor = GrayText,
                         selectedTextColor = BluePrimary,

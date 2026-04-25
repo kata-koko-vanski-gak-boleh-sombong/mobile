@@ -12,5 +12,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     object Home : Screen("home", "Beranda", Icons.Default.Home)
     object Scenario : Screen("scenario", "Scenario", Icons.Default.Balance)
+    object ScenarioOverview : Screen("scenario-overview", "Scenario Overview", Icons.Default.Balance)
     object Simulation : Screen("simulation", "Simulation", Icons.Default.Balance)
 }

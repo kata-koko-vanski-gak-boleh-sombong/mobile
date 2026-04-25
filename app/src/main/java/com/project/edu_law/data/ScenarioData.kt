@@ -1,16 +1,16 @@
 package com.project.edu_law.data
 
 data class ScenarioData(
+    val id: String,
+    val title: String,
+    val subtitle: String,
     val character: String,
     val context: String,
     val difficulty: String,
     val estimated_duration_minutes: Int,
-    val id: String,
     val metrics_baseline: MetricsBaseline,
     val nodes: List<Node>,
     val scenario_id: String,
-    val subtitle: String,
-    val title: String
 ) {
     data class MetricsBaseline(
         val civil_justice: Int,
