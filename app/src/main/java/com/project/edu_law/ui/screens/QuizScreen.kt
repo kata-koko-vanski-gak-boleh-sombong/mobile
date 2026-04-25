@@ -1,5 +1,6 @@
 package com.project.edu_law.ui.screens
 
+import android.util.Base64
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -30,7 +31,6 @@ import androidx.navigation.NavController
 import com.project.edu_law.data.ScenarioData
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 import com.project.edu_law.ui.theme.*
-import android.util.Base64
 
 @Composable
 fun QuizScreen(
@@ -81,6 +81,7 @@ fun QuizScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
+        // --- HALAMAN SOAL ---
         AnimatedVisibility(
             visible = !showEnding,
             exit = fadeOut(animationSpec = tween(300))
@@ -188,9 +189,12 @@ fun QuizScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    if (!node.is_end_node && node.content.choices != null) {
+                    // FIX: KEMBALI MENGGUNAKAN getSafeChoices() AGAR TIDAK BLANK
+                    val safeChoices = node.getSafeChoices()
+
+                    if (!node.is_end_node && safeChoices != null) {
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            node.content.choices.forEach { choice ->
+                            safeChoices.forEach { choice ->
                                 OptionItem(
                                     choice = choice,
                                     isSelected = selectedChoice == choice,
@@ -230,6 +234,9 @@ fun QuizScreen(
                                             showEnding = true
 
                                             currentMetrics?.let { finalMetrics ->
+                                                // FIX: KEMBALI MENGGUNAKAN getSafeEndingData()
+                                                val safeNextEnding = nextNode.getSafeEndingData()
+
                                                 val historyItem = com.project.edu_law.data.entity.HistoryEntity(
                                                     scenarioId = scenarioId,
                                                     scenarioTitle = scenario?.title ?: "Unknown",
@@ -237,8 +244,7 @@ fun QuizScreen(
                                                     criminalJustice = finalMetrics.criminal_justice,
                                                     civilJustice = finalMetrics.civil_justice,
                                                     corruption = finalMetrics.corruption,
-                                                    // FIX: Mengambil ending_type dari dalam blok content!
-                                                    endingType = nextNode.content.ending_data?.ending_type ?: "unknown"
+                                                    endingType = safeNextEnding?.ending_type ?: "unknown"
                                                 )
                                                 viewModel.saveQuizHistory(historyItem)
                                             }
@@ -264,142 +270,145 @@ fun QuizScreen(
             }
         }
 
+        // --- HALAMAN ENDING ---
+        // FIX: KEMBALI MENGGUNAKAN getSafeEndingData()
+        val safeEndingData = node.getSafeEndingData()
+
         AnimatedVisibility(
-            visible = showEnding && node.content.ending_data != null,
+            visible = showEnding && safeEndingData != null,
             enter = slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500)),
             exit = fadeOut()
         ) {
-            val endingData = node.content.ending_data!!
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFF0FDF4))
-                    .statusBarsPadding()
-            ) {
-                Column(
+            if (safeEndingData != null) {
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(insightScrollState)
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .background(Color(0xFFF0FDF4))
+                        .statusBarsPadding()
                 ) {
-                    Text(
-                        "SIMULASI SELESAI",
-                        fontWeight = FontWeight.Black,
-                        letterSpacing = 2.sp,
-                        color = Color(0xFF2E7D32),
-                        fontSize = 14.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Card(
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        shape = RoundedCornerShape(24.dp),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        modifier = Modifier.fillMaxWidth()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(insightScrollState)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(modifier = Modifier.padding(24.dp)) {
+                        Text(
+                            "SIMULASI SELESAI",
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 2.sp,
+                            color = Color(0xFF2E7D32),
+                            fontSize = 14.sp
+                        )
 
-                            Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            shape = RoundedCornerShape(24.dp),
+                            elevation = CardDefaults.cardElevation(4.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(24.dp)) {
 
-                            Text(
-                                text = "${node.content.body}\n\nKesimpulan: ${endingData.summary}",
-                                fontSize = 14.sp,
-                                color = Color.DarkGray,
-                                lineHeight = 22.sp
-                            )
+                                Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
 
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Divider(color = GrayBorder)
-                            Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(12.dp))
 
-                            Text("Skor Rule of Law Akhir:", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                            Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "${node.content.body}\n\nKesimpulan: ${safeEndingData.summary}",
+                                    fontSize = 14.sp,
+                                    color = Color.DarkGray,
+                                    lineHeight = 22.sp
+                                )
 
-                            currentMetrics?.let { metrics ->
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Divider(color = GrayBorder)
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                Text("Skor Rule of Law Akhir:", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                currentMetrics?.let { metrics ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        LiveMetricItem(Icons.Default.Group, "Fundamental\nRights", metrics.fundamental_rights, Color(0xFF2E7D32))
+                                        LiveMetricItem(Icons.Default.Gavel, "Criminal\nJustice", metrics.criminal_justice, Color(0xFF1565C0))
+                                        LiveMetricItem(Icons.Default.AccountBalance, "Civil\nJustice", metrics.civil_justice, Color(0xFF6A1B9A))
+                                        LiveMetricItem(Icons.Default.Security, "Corruption\nLevel", metrics.corruption, Color(0xFFC62828))
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Divider(color = GrayBorder)
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                Text("Real World Case", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(safeEndingData.real_world_case.detail, fontSize = 13.sp, color = GrayText)
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
-                                    LiveMetricItem(Icons.Default.Group, "Fundamental\nRights", metrics.fundamental_rights, Color(0xFF2E7D32))
-                                    LiveMetricItem(Icons.Default.Gavel, "Criminal\nJustice", metrics.criminal_justice, Color(0xFF1565C0))
-                                    LiveMetricItem(Icons.Default.AccountBalance, "Civil\nJustice", metrics.civil_justice, Color(0xFF6A1B9A))
-                                    LiveMetricItem(Icons.Default.Security, "Corruption\nLevel", metrics.corruption, Color(0xFFC62828))
+                                    InfoTag(Icons.Default.MenuBook, "Tahun", safeEndingData.real_world_case.year, Modifier.weight(1f))
+                                    InfoTag(Icons.Default.Gavel, "Sumber", safeEndingData.real_world_case.source, Modifier.weight(1f))
                                 }
                             }
-
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Divider(color = GrayBorder)
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Text("Real World Case", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(endingData.real_world_case.detail, fontSize = 13.sp, color = GrayText)
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                InfoTag(Icons.Default.MenuBook, "Tahun", endingData.real_world_case.year, Modifier.weight(1f))
-                                InfoTag(Icons.Default.Gavel, "Sumber", endingData.real_world_case.source, Modifier.weight(1f))
-                            }
                         }
+
+                        Spacer(modifier = Modifier.height(150.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(150.dp))
-                }
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .background(
-                            brush = androidx.compose.ui.graphics.Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, Color(0xFFF0FDF4), Color(0xFFF0FDF4))
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .background(
+                                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                    colors = listOf(Color.Transparent, Color(0xFFF0FDF4), Color(0xFFF0FDF4))
+                                )
                             )
-                        )
-                        .padding(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    OutlinedButton(
-                        onClick = {
-                            // MENGGUNAKAN BASE64 AGAR 100% AMAN DARI ERROR KARAKTER
-                            val bytes = endingData.summary.toByteArray(Charsets.UTF_8)
-                            val safeContext = Base64.encodeToString(bytes, Base64.URL_SAFE or Base64.NO_WRAP)
-
-                            navController.navigate("chat_ai/$safeContext")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = Color.White,
-                            contentColor = BluePrimary
-                        ),
-                        border = BorderStroke(2.dp, BluePrimary),
-                        shape = RoundedCornerShape(28.dp)
+                            .padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text("Tanya AI Alasan Keputusan Ini", fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                    }
+                        OutlinedButton(
+                            onClick = {
+                                // FIX: Menambahkan Base64.NO_PADDING agar URL Navigasi 100% tidak error/crash
+                                val bytes = safeEndingData.summary.toByteArray(Charsets.UTF_8)
+                                val safeContext = Base64.encodeToString(bytes, Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING)
+                                navController.navigate("chat_ai/$safeContext")
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = Color.White,
+                                contentColor = BluePrimary
+                            ),
+                            border = BorderStroke(2.dp, BluePrimary),
+                            shape = RoundedCornerShape(28.dp)
+                        ) {
+                            Text("Tanya Pak Hukum", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                        }
 
-                    Button(
-                        onClick = {
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
-                        shape = RoundedCornerShape(28.dp)
-                    ) {
-                        Text("Selesai & Kembali", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                        Button(
+                            onClick = {
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
+                            shape = RoundedCornerShape(28.dp)
+                        ) {
+                            Text("Selesai", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                        }
                     }
                 }
             }
@@ -469,7 +478,6 @@ fun OptionItem(choice: ScenarioData.Node.Choice, isSelected: Boolean, onClick: (
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Radio Button Custom
             Box(
                 modifier = Modifier
                     .size(24.dp)
@@ -524,7 +532,6 @@ fun OptionItem(choice: ScenarioData.Node.Choice, isSelected: Boolean, onClick: (
 @Composable
 fun MiniImpactBadge(icon: ImageVector, value: Int, color: Color) {
     val displayValue = if (value > 0) "+$value" else value.toString()
-
     val badgeBg = color.copy(alpha = 0.1f)
 
     Row(

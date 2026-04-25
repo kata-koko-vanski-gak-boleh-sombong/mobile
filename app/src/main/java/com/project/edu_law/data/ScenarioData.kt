@@ -33,8 +33,19 @@ data class ScenarioData(
         val is_end_node: Boolean,
         val is_start_node: Boolean,
         val sequence_order: Int,
-        val content: Content
+        val content: Content,
+
+        val choices: List<Choice>? = null,
+        val ending_data: EndingData? = null
     ) {
+        fun getSafeChoices(): List<Choice>? {
+            return this.content.choices ?: this.choices
+        }
+
+        fun getSafeEndingData(): EndingData? {
+            return this.content.ending_data ?: this.ending_data
+        }
+
         data class Content(
             val title: String,
             val body: String,

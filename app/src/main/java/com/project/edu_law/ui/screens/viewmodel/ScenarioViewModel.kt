@@ -12,10 +12,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class ChatMessage(
     val text: String,
-    val isUser: Boolean
+    val isUser: Boolean,
+    val timestamp: String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 )
 
 class ScenarioViewModel(private val repository: ScenarioRepository) : ViewModel() {

@@ -1,5 +1,6 @@
 package com.project.edu_law.ui.screens
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,20 +10,25 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.project.edu_law.ui.screens.viewmodel.ChatMessage
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 import com.project.edu_law.ui.theme.BluePrimary
-import com.project.edu_law.ui.theme.BlueSecondary
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +41,8 @@ fun ChatScreen(
     val isChatLoading by viewModel.isChatLoading.collectAsState()
     var inputText by remember { mutableStateOf("") }
 
+    val introTime = remember { SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()) }
+
     LaunchedEffect(Unit) {
         viewModel.clearChat()
     }
@@ -42,7 +50,7 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tanya AI Hukum", fontWeight = FontWeight.Bold) },
+                title = { Text("Tanya Pak Hukum", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -110,28 +118,29 @@ fun ChatScreen(
             ) {
                 item {
                     ChatBubble(
-                        message = ChatMessage("Halo! Silakan tanya apa saja terkait simulasi yang baru Anda selesaikan. Saya sudah membaca konteks keputusan Anda.", false)
+                        text = "Halo! Silakan tanya apa saja terkait simulasi yang baru Anda selesaikan. Saya sudah membaca konteks keputusan Anda.",
+                        isUser = false,
+                        timestamp = introTime
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
 
                 items(messages) { msg ->
-                    ChatBubble(message = msg)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    ChatBubble(
+                        text = msg.text,
+                        isUser = msg.isUser,
+                        timestamp = msg.timestamp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
 
                 if (isChatLoading) {
                     item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = BluePrimary,
-                                strokeWidth = 2.dp
-                            )
-                        }
+                        ChatBubble(
+                            isUser = false,
+                            isTyping = true
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
                     }
                 }
             }
@@ -140,39 +149,107 @@ fun ChatScreen(
 }
 
 @Composable
-fun ChatBubble(message: ChatMessage) {
+fun ChatBubble(
+    text: String = "",
+    isUser: Boolean,
+    timestamp: String = "",
+    isTyping: Boolean = false
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (message.isUser) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
+        verticalAlignment = Alignment.Bottom
     ) {
+        if (!isUser) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(BluePrimary),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.AutoAwesome, contentDescription = "AI Profile", tint = Color.White, modifier = Modifier.size(18.dp))
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+
         Box(
             modifier = Modifier
-                .widthIn(max = 280.dp)
+                .widthIn(max = 260.dp)
                 .background(
-                    color = if (message.isUser) BluePrimary else Color.White,
+                    color = if (isUser) BluePrimary else Color.White,
                     shape = RoundedCornerShape(
                         topStart = 16.dp,
                         topEnd = 16.dp,
-                        bottomStart = if (message.isUser) 16.dp else 4.dp,
-                        bottomEnd = if (message.isUser) 4.dp else 16.dp
+                        bottomStart = if (isUser) 16.dp else 4.dp,
+                        bottomEnd = if (isUser) 4.dp else 16.dp
                     )
                 )
                 .border(
                     width = 1.dp,
-                    color = if (message.isUser) Color.Transparent else Color.LightGray.copy(alpha = 0.5f),
+                    color = if (isUser) Color.Transparent else Color.LightGray.copy(alpha = 0.5f),
                     shape = RoundedCornerShape(
                         topStart = 16.dp, topEnd = 16.dp,
-                        bottomStart = if (message.isUser) 16.dp else 4.dp,
-                        bottomEnd = if (message.isUser) 4.dp else 16.dp
+                        bottomStart = if (isUser) 16.dp else 4.dp,
+                        bottomEnd = if (isUser) 4.dp else 16.dp
                     )
                 )
-                .padding(12.dp)
+                .padding(horizontal = 12.dp, vertical = 10.dp)
         ) {
-            Text(
-                text = message.text,
-                color = if (message.isUser) Color.White else Color.Black,
-                fontSize = 14.sp,
-                lineHeight = 20.sp
+            if (isTyping) {
+                TypingIndicator()
+            } else {
+                Column {
+                    Text(
+                        text = text,
+                        color = if (isUser) Color.White else Color.Black,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp
+                    )
+
+                    if (timestamp.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = timestamp,
+                            fontSize = 10.sp,
+                            // Warna jam: putih agak transparan untuk user (biru), abu-abu untuk AI (putih)
+                            color = if (isUser) Color.White.copy(alpha = 0.7f) else Color.Gray,
+                            // Alignment: Kiri untuk User, Kanan untuk AI (Pak Hukum)
+                            modifier = Modifier.align(if (isUser) Alignment.Start else Alignment.End)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TypingIndicator() {
+    val infiniteTransition = rememberInfiniteTransition(label = "typing")
+    val progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "progress"
+    )
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp)
+    ) {
+        for (i in 0..2) {
+            val yOffset = (sin((progress * 2 * PI) + (i * 2))) * 5f
+
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .offset(y = yOffset.dp)
+                    .background(Color.Gray.copy(alpha = 0.7f), CircleShape)
             )
         }
     }

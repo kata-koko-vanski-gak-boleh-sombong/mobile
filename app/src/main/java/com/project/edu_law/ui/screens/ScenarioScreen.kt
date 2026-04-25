@@ -1,95 +1,127 @@
 package com.project.edu_law.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.project.edu_law.ui.navigation.Screen
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import com.project.edu_law.data.entity.ScenarioEntity
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
+import kotlin.math.roundToInt
 
 @Composable
 fun LegalScenarioScreen(
     navController: NavHostController,
     viewModel: ScenarioViewModel
 ) {
-
     val scenarioList by viewModel.allScenarios.collectAsState()
 
-    Scaffold(
-        floatingActionButton = {
+    Scaffold { padding ->
+        var parentSize by remember { mutableStateOf(IntSize.Zero) }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .onSizeChanged { parentSize = it }
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF8F9FA))
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp)
+            ) {
+                Text(
+                    text = "Legal Scenarios",
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Color(0xFF004080)
+                )
+                Text(
+                    text = "Uji pemahaman hukum Anda melalui simulasi kasus nyata.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (scenarioList.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Belum ada skenario tersedia", color = Color.Gray)
+                    }
+                } else {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(top = 16.dp, bottom = 80.dp, start = 4.dp, end = 4.dp)
+                    ) {
+                        items(
+                            items = scenarioList,
+                            key = { it.id }
+                        ) { scenario ->
+                            ScenarioCard(
+                                scenario = scenario,
+                                onStartClick = {
+                                    navController.navigate("${Screen.ScenarioOverview.route}/${scenario.id}")
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            var offsetX by remember { mutableStateOf(0f) }
+            var offsetY by remember { mutableStateOf(0f) }
+            var fabSize by remember { mutableStateOf(IntSize.Zero) }
+
             ExtendedFloatingActionButton(
                 onClick = {
                     navController.navigate(Screen.Generate.route)
                 },
-                icon = {
-                    Icon(Icons.Default.AutoAwesome, contentDescription = "Generate Skenario")
-                },
-                text = {
-                    Text("Generate Skenario Baru", fontWeight = FontWeight.Bold)
-                },
                 containerColor = Color(0xFF004080),
                 contentColor = Color.White,
-                shape = RoundedCornerShape(16.dp)
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF8F9FA))
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp)
-        ) {
-            Text(
-                text = "Legal Scenarios",
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = Color(0xFF004080)
-            )
-            Text(
-                text = "Uji pemahaman hukum Anda melalui simulasi kasus nyata.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+                    .onSizeChanged { fabSize = it }
+                    .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                    .pointerInput(parentSize, fabSize) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
 
-            Spacer(modifier = Modifier.height(16.dp))
+                            if (parentSize != IntSize.Zero && fabSize != IntSize.Zero) {
+                                val paddingPx = 32.dp.toPx()
 
-            if (scenarioList.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Belum ada skenario tersedia", color = Color.Gray)
-                }
-            } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 80.dp, start = 4.dp, end = 4.dp)
-                ) {
-                    items(
-                        items = scenarioList,
-                        key = { it.id }
-                    ) { scenario ->
-                        ScenarioCard(
-                            scenario = scenario,
-                            onStartClick = {
-                                navController.navigate("${Screen.ScenarioOverview.route}/${scenario.id}")
+                                val minX = -(parentSize.width - fabSize.width - paddingPx)
+                                val minY = -(parentSize.height - fabSize.height - paddingPx)
+
+                                val newX = offsetX + dragAmount.x
+                                val newY = offsetY + dragAmount.y
+
+                                offsetX = newX.coerceIn(minX, 0f)
+                                offsetY = newY.coerceIn(minY, 0f)
                             }
-                        )
+                        }
                     }
-                }
+            ) {
+                Text("Buat Skenario", fontWeight = FontWeight.Bold)
             }
         }
     }

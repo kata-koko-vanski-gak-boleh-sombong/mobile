@@ -91,13 +91,11 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
             GenerateScreen(viewModel = viewModel, navController = navController)
         }
 
-        // ROUTE UNTUK CHAT AI
         composable(
             route = "chat_ai/{encodedContext}"
         ) { backStackEntry ->
             val encodedContext = backStackEntry.arguments?.getString("encodedContext") ?: ""
 
-            // Decode dari Base64 kembali ke teks normal
             val decodedContext = try {
                 String(Base64.decode(encodedContext, Base64.URL_SAFE or Base64.NO_WRAP), Charsets.UTF_8)
             } catch (e: Exception) {
