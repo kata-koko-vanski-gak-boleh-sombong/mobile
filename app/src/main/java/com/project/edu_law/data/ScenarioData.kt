@@ -1,16 +1,25 @@
 package com.project.edu_law.data
 
+import com.google.gson.annotations.SerializedName
+
 data class ScenarioData(
     val id: String,
     val title: String,
     val subtitle: String,
+    @SerializedName("character_role")
     val character: String,
     val context: String,
     val difficulty: String,
     val estimated_duration_minutes: Int,
     val metrics_baseline: MetricsBaseline,
+    @SerializedName("nodes_data")
     val nodes: List<Node>,
     val scenario_id: String,
+
+    val id_user: String? = null,
+    val is_active: Boolean? = null,
+    val created_at: String? = null,
+    val updated_at: String? = null
 ) {
     data class MetricsBaseline(
         val civil_justice: Int,

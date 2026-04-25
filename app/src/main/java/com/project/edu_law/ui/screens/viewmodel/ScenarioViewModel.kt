@@ -24,6 +24,16 @@ class ScenarioViewModel(private val repository: ScenarioRepository) : ViewModel(
         }
     }
 
+    init {
+        checkAndSyncData()
+    }
+
+    private fun checkAndSyncData() {
+        viewModelScope.launch {
+            repository.syncScenariosFromApi()
+        }
+    }
+
     val allScenarios: StateFlow<List<ScenarioEntity>> = repository.getAllScenarios()
         .stateIn(
             scope = viewModelScope,

@@ -15,6 +15,9 @@ interface ScenarioDao {
     @Query("SELECT * FROM scenarios WHERE id = :id")
     suspend fun getScenarioById(id: String): ScenarioEntity?
 
+    @Query("SELECT COUNT(*) FROM scenarios")
+    suspend fun getScenarioCount(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertScenarios(scenarios: List<ScenarioEntity>)
 
