@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
-import com.project.edu_law.ui.theme.BluePrimary
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -57,15 +56,15 @@ fun ChatScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = BluePrimary,
-                    navigationIconContentColor = BluePrimary
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.primary
                 )
             )
         },
         bottomBar = {
             Surface(
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 8.dp
             ) {
                 Row(
@@ -77,12 +76,15 @@ fun ChatScreen(
                     OutlinedTextField(
                         value = inputText,
                         onValueChange = { inputText = it },
-                        placeholder = { Text("Tanya alasan hukumnya...") },
+                        placeholder = { Text("Tanya alasan hukumnya...", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)) },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(24.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = BluePrimary,
-                            unfocusedBorderColor = Color.LightGray
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            cursorColor = MaterialTheme.colorScheme.primary
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -93,11 +95,11 @@ fun ChatScreen(
                                 inputText = ""
                             }
                         },
-                        containerColor = BluePrimary,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         shape = CircleShape,
                         modifier = Modifier.size(50.dp)
                     ) {
-                        Icon(Icons.Default.Send, contentDescription = "Kirim", tint = Color.White)
+                        Icon(Icons.Default.Send, contentDescription = "Kirim", tint = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             }
@@ -106,7 +108,7 @@ fun ChatScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF8F9FA))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
         ) {
             LazyColumn(
@@ -165,10 +167,10 @@ fun ChatBubble(
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(BluePrimary),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.AutoAwesome, contentDescription = "AI Profile", tint = Color.White, modifier = Modifier.size(18.dp))
+                Icon(Icons.Default.AutoAwesome, contentDescription = "AI Profile", tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(18.dp))
             }
             Spacer(modifier = Modifier.width(8.dp))
         }
@@ -177,7 +179,7 @@ fun ChatBubble(
             modifier = Modifier
                 .widthIn(max = 260.dp)
                 .background(
-                    color = if (isUser) BluePrimary else Color.White,
+                    color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(
                         topStart = 16.dp,
                         topEnd = 16.dp,
@@ -187,7 +189,7 @@ fun ChatBubble(
                 )
                 .border(
                     width = 1.dp,
-                    color = if (isUser) Color.Transparent else Color.LightGray.copy(alpha = 0.5f),
+                    color = if (isUser) Color.Transparent else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                     shape = RoundedCornerShape(
                         topStart = 16.dp, topEnd = 16.dp,
                         bottomStart = if (isUser) 16.dp else 4.dp,
@@ -202,7 +204,7 @@ fun ChatBubble(
                 Column {
                     Text(
                         text = text,
-                        color = if (isUser) Color.White else Color.Black,
+                        color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
                         lineHeight = 20.sp
                     )
@@ -212,9 +214,7 @@ fun ChatBubble(
                         Text(
                             text = timestamp,
                             fontSize = 10.sp,
-                            // Warna jam: putih agak transparan untuk user (biru), abu-abu untuk AI (putih)
-                            color = if (isUser) Color.White.copy(alpha = 0.7f) else Color.Gray,
-                            // Alignment: Kiri untuk User, Kanan untuk AI (Pak Hukum)
+                            color = if (isUser) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                             modifier = Modifier.align(if (isUser) Alignment.Start else Alignment.End)
                         )
                     }
@@ -249,7 +249,7 @@ fun TypingIndicator() {
                 modifier = Modifier
                     .size(8.dp)
                     .offset(y = yOffset.dp)
-                    .background(Color.Gray.copy(alpha = 0.7f), CircleShape)
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), CircleShape)
             )
         }
     }

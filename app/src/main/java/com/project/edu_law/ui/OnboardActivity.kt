@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.project.edu_law.MainActivity
 import com.project.edu_law.R
-import com.project.edu_law.ui.theme.*
+import com.project.edu_law.ui.theme.EdulawTheme
 import kotlinx.coroutines.launch
 
 data class OnboardingPage(
@@ -55,7 +54,6 @@ class OnboardActivity : ComponentActivity() {
                 OnboardingScreen(
                     onFinish = {
                         sharedPreferences.edit().putBoolean("is_first_time", false).apply()
-
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     }
@@ -69,7 +67,7 @@ class OnboardActivity : ComponentActivity() {
 fun OnboardingScreen(onFinish: () -> Unit) {
     val pages = listOf(
         OnboardingPage(
-            imageRes = R.drawable.placeholder, // Pastikan ganti sesuai asetmu
+            imageRes = R.drawable.placeholder,
             title = "Hukum Bukan Lagi\nLabirin Rumit",
             description = "Pahami aturan main di Indonesia dengan cara yang seru. Kami menerjemahkan pasal kaku menjadi simulasi yang mudah dimengerti."
         ),
@@ -91,7 +89,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             OnboardingTopBar(
                 onSkip = onFinish,
@@ -134,14 +132,15 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                         .padding(horizontal = 24.dp)
                         .height(56.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 ) {
                     Text(
                         text = if (isLastPage) "Mulai Beraksi" else "Lanjut",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
                     )
                 }
             }
@@ -162,7 +161,7 @@ fun OnboardingTopBar(onSkip: () -> Unit, showSkip: Boolean) {
     ) {
         Text(
             text = "EduJustice",
-            color = BluePrimary,
+            color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = (-0.5).sp
@@ -173,7 +172,7 @@ fun OnboardingTopBar(onSkip: () -> Unit, showSkip: Boolean) {
             TextButton(onClick = onSkip) {
                 Text(
                     text = "Lewati",
-                    color = GrayText,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -210,7 +209,7 @@ fun OnboardingPageContent(page: OnboardingPage) {
 
         Text(
             text = page.title,
-            color = Color(0xFF111827),
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
@@ -222,7 +221,7 @@ fun OnboardingPageContent(page: OnboardingPage) {
 
         Text(
             text = page.description,
-            color = GrayText,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             style = MaterialTheme.typography.bodyLarge.copy(
                 textAlign = TextAlign.Center,
                 lineHeight = 26.sp
@@ -250,7 +249,10 @@ fun DotsIndicator(totalDots: Int, selectedIndex: Int, modifier: Modifier = Modif
                     .height(8.dp)
                     .width(width)
                     .clip(CircleShape)
-                    .background(if (isSelected) BluePrimary else GrayBorder)
+                    .background(
+                        if (isSelected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
+                    )
             )
         }
     }

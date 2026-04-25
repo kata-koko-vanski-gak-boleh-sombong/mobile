@@ -36,7 +36,7 @@ fun LegalScenarioScreen(
     var parentSize by remember { mutableStateOf(IntSize.Zero) }
 
     Scaffold(
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Box(
             modifier = Modifier
@@ -56,12 +56,12 @@ fun LegalScenarioScreen(
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = (-0.5).sp
                     ),
-                    color = Color(0xFF111827)
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "Uji integritasmu dalam menghadapi dilema hukum dan pilar keadilan.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     lineHeight = 20.sp
                 )
 
@@ -69,7 +69,7 @@ fun LegalScenarioScreen(
 
                 if (scenarioList.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Belum ada skenario tersedia", color = Color.Gray)
+                        Text("Belum ada skenario tersedia", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                     }
                 } else {
                     LazyColumn(
@@ -97,8 +97,8 @@ fun LegalScenarioScreen(
 
             ExtendedFloatingActionButton(
                 onClick = { navController.navigate(Screen.Generate.route) },
-                containerColor = Color(0xFF004080),
-                contentColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -130,16 +130,16 @@ fun ScenarioCard(
     onStartClick: () -> Unit
 ) {
     val (roleBgColor, roleTextColor) = when {
-        scenario.character.contains("Pemerintah", ignoreCase = true) -> Color(0xFFEEF2FF) to Color(0xFF4338CA)
-        scenario.character.contains("Masyarakat", ignoreCase = true) -> Color(0xFFECFDF5) to Color(0xFF047857)
-        else -> Color(0xFFF9FAFB) to Color(0xFF4B5563)
+        scenario.character.contains("Pemerintah", ignoreCase = true) -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) to MaterialTheme.colorScheme.primary
+        scenario.character.contains("Masyarakat", ignoreCase = true) -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f) to MaterialTheme.colorScheme.onSurface
+        else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f) to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
     }
 
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, Color(0xFFF3F4F6)),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -164,7 +164,7 @@ fun ScenarioCard(
                 Icon(
                     imageVector = Icons.Default.Gavel,
                     contentDescription = null,
-                    tint = Color(0xFFD1D5DB),
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -177,13 +177,13 @@ fun ScenarioCard(
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 28.sp
                 ),
-                color = Color(0xFF1F2937)
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = scenario.subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF6B7280),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.padding(vertical = 12.dp),
                 maxLines = 2
             )
@@ -193,7 +193,10 @@ fun ScenarioCard(
             Button(
                 onClick = onStartClick,
                 modifier = Modifier.fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF004080)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(

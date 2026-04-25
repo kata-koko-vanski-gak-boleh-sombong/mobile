@@ -27,9 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-val PrimaryBlue = Color(0xFF004080)
-val BackgroundGray = Color(0xFFF8F9FA)
-
 @Composable
 fun HomeScreen() {
     val scrollState = rememberScrollState()
@@ -37,7 +34,7 @@ fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
             .padding(20.dp)
             .statusBarsPadding()
@@ -46,25 +43,25 @@ fun HomeScreen() {
             text = "EduJustice",
             fontSize = 28.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = PrimaryBlue
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             text = "Pahami Hukum, Tegakkan Keadilan.",
             fontSize = 14.sp,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
         )
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = PrimaryBlue)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Icon(
                     imageVector = Icons.Default.Balance,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(40.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -72,20 +69,25 @@ fun HomeScreen() {
                     text = "Selamat Datang di Simulasi Rule of Law",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     lineHeight = 28.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Pelajari bagaimana setiap keputusan berdampak pada indeks keadilan dunia.",
                     fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.8f)
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-        Text("Pusat Informasi", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Black)
+        Text(
+            text = "Pusat Informasi",
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         ExpandableInfoCard(
@@ -95,7 +97,7 @@ fun HomeScreen() {
             Text(
                 text = "World Justice Project (WJP) adalah organisasi independen yang mengukur penerapan supremasi hukum (Rule of Law) di seluruh dunia.\n\nMelalui Indeks WJP, kita dapat melihat gambaran nyata tentang seberapa adil, transparan, dan akuntabel suatu negara atau institusi dalam menjalankan aturan hukum di kehidupan sehari-hari.",
                 fontSize = 14.sp,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                 lineHeight = 22.sp
             )
         }
@@ -143,7 +145,7 @@ fun HomeScreen() {
             Text(
                 text = "Setiap keputusan dalam simulasi ini akan langsung memengaruhi 4 pilar di atas secara sistemik.\n\nContoh: Membiarkan penyalahgunaan kuota sekolah demi relasi mungkin terlihat sebagai kompromi kecil, namun secara hukum ini menurunkan skor 'Ketiadaan Korupsi' sekaligus mencederai 'Hak Fundamental' warga lain yang kehilangan akses pendidikan yang adil.",
                 fontSize = 14.sp,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                 lineHeight = 22.sp
             )
         }
@@ -180,7 +182,7 @@ fun ExpandableInfoCard(
                     stiffness = Spring.StiffnessMediumLow
                 )
             ),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -192,10 +194,15 @@ fun ExpandableInfoCard(
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(PrimaryBlue.copy(alpha = 0.1f), CircleShape),
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(icon, contentDescription = null, tint = PrimaryBlue, modifier = Modifier.size(20.dp))
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -204,14 +211,14 @@ fun ExpandableInfoCard(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
 
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "Expand",
-                    tint = Color.Gray,
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     modifier = Modifier.rotate(rotation)
                 )
             }
@@ -219,7 +226,7 @@ fun ExpandableInfoCard(
             if (expanded) {
                 Column {
                     Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                     Spacer(modifier = Modifier.height(16.dp))
                     content()
                 }
@@ -234,9 +241,19 @@ fun PillarItem(icon: ImageVector, color: Color, title: String, desc: String) {
         Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.width(12.dp))
         Column {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Black)
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(desc, fontSize = 13.sp, color = Color.DarkGray, lineHeight = 20.sp)
+            Text(
+                text = desc,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                lineHeight = 20.sp
+            )
         }
     }
 }

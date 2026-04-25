@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.project.edu_law.ui.navigation.Screen
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
-import com.project.edu_law.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +37,7 @@ fun GenerateScreen(
     val difficulties = listOf("Mudah", "Menengah", "Sulit")
 
     Scaffold(
-        containerColor = White,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = {
@@ -50,15 +48,15 @@ fun GenerateScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = White,
-                    titleContentColor = DarkText
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         },
         bottomBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = White,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 20.dp
             ) {
                 Button(
@@ -80,19 +78,19 @@ fun GenerateScreen(
                         .padding(24.dp)
                         .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BluePrimary,
-                        disabledContainerColor = GrayBorder
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     if (isGenerating) {
-                        CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("Membuat Cerita...", fontWeight = FontWeight.Bold, color = White)
+                        Text("Membuat Cerita...", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(20.dp), tint = White)
+                        Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onPrimary)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Generate Simulasi", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = White)
+                        Text("Generate Simulasi", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             }
@@ -102,7 +100,7 @@ fun GenerateScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(White)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -110,12 +108,12 @@ fun GenerateScreen(
                 "Rancang Dilema Hukum",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = DarkText
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 "AI akan menciptakan simulasi unik berdasarkan parameter yang kamu tentukan.",
                 fontSize = 14.sp,
-                color = GrayText,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 lineHeight = 20.sp,
                 modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
             )
@@ -153,13 +151,13 @@ fun GenerateScreen(
             if (errorMessage != null) {
                 Spacer(modifier = Modifier.height(24.dp))
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF2F2)),
-                    border = BorderStroke(1.dp, Color(0xFFFCA5A5)),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         text = errorMessage!!,
-                        color = Color(0xFF991B1B),
+                        color = MaterialTheme.colorScheme.onErrorContainer,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -175,7 +173,7 @@ fun SectionHeader(title: String) {
         text = title,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        color = DarkText
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -187,9 +185,9 @@ fun CharacterSelectionCard(text: String, isSelected: Boolean, onClick: () -> Uni
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(
             width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected) BluePrimary else GrayBorder
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
         ),
-        color = if (isSelected) BlueSecondary else White,
+        color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -199,12 +197,12 @@ fun CharacterSelectionCard(text: String, isSelected: Boolean, onClick: () -> Uni
         ) {
             Text(
                 text = text,
-                color = if (isSelected) BluePrimary else GrayText,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium,
                 fontSize = 15.sp
             )
             if (isSelected) {
-                Icon(Icons.Default.ChevronRight, null, tint = BluePrimary)
+                Icon(Icons.Default.ChevronRight, null, tint = MaterialTheme.colorScheme.primary)
             }
         }
     }
@@ -218,9 +216,9 @@ fun DifficultyChip(text: String, isSelected: Boolean, onClick: () -> Unit, modif
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(
             width = 1.dp,
-            color = if (isSelected) BluePrimary else GrayBorder
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
         ),
-        color = if (isSelected) BluePrimary else White,
+        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
         modifier = modifier
     ) {
         Box(
@@ -229,7 +227,7 @@ fun DifficultyChip(text: String, isSelected: Boolean, onClick: () -> Unit, modif
         ) {
             Text(
                 text = text,
-                color = if (isSelected) White else GrayText,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                 fontSize = 14.sp
             )

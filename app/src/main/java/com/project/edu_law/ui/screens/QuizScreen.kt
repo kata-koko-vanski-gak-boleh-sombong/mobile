@@ -63,7 +63,7 @@ fun QuizScreen(
 
     if (scenario == null || currentNode == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = BluePrimary)
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
         return
     }
@@ -85,7 +85,7 @@ fun QuizScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF8F9FA))
+                    .background(MaterialTheme.colorScheme.background)
                     .statusBarsPadding()
             ) {
                 Column(
@@ -104,21 +104,21 @@ fun QuizScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text("Tahap ${node.sequence_order} dari 4", fontSize = 12.sp, color = GrayText)
-                            Text("${(currentStepProgress * 100).toInt()}% Selesai", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = BluePrimary)
+                            Text("Tahap ${node.sequence_order} dari 4", fontSize = 12.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
+                            Text("${(currentStepProgress * 100).toInt()}% Selesai", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = if (isMetricsExpanded) "Sembunyikan" else "Lihat Metrik",
                                 fontSize = 10.sp,
-                                color = GrayText,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                                 modifier = Modifier.padding(end = 4.dp)
                             )
                             Icon(
                                 imageVector = if (isMetricsExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                                contentDescription = "Toggle Metrics",
-                                tint = GrayText,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                                 modifier = Modifier.size(18.dp)
                             )
                         }
@@ -131,8 +131,8 @@ fun QuizScreen(
                             .padding(vertical = 8.dp)
                             .height(8.dp)
                             .clip(CircleShape),
-                        color = BluePrimary,
-                        trackColor = GrayBorder
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
                     )
 
                     AnimatedVisibility(
@@ -142,7 +142,7 @@ fun QuizScreen(
                     ) {
                         currentMetrics?.let { metrics ->
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = Color.White),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                                 shape = RoundedCornerShape(16.dp),
                                 elevation = CardDefaults.cardElevation(2.dp),
                                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
@@ -161,15 +161,15 @@ fun QuizScreen(
                     }
 
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         shape = RoundedCornerShape(16.dp),
                         elevation = CardDefaults.cardElevation(2.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(24.dp)) {
-                            Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                            Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text(node.content.body, fontSize = 15.sp, lineHeight = 24.sp, color = Color.DarkGray)
+                            Text(node.content.body, fontSize = 15.sp, lineHeight = 24.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
                         }
                     }
 
@@ -193,7 +193,7 @@ fun QuizScreen(
                 if (!node.is_end_node) {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
                         shadowElevation = 8.dp
                     ) {
                         Button(
@@ -233,7 +233,10 @@ fun QuizScreen(
                             },
                             enabled = selectedChoice != null,
                             modifier = Modifier.fillMaxWidth().padding(24.dp).height(58.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Text("Konfirmasi Keputusan", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
@@ -250,7 +253,7 @@ fun QuizScreen(
             exit = fadeOut()
         ) {
             if (safeEndingData != null) {
-                Box(modifier = Modifier.fillMaxSize().background(Color(0xFFF0FDF4)).statusBarsPadding()) {
+                Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding()) {
                     Column(
                         modifier = Modifier.fillMaxSize().verticalScroll(insightScrollState).padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -258,19 +261,19 @@ fun QuizScreen(
                         Text("SIMULASI SELESAI", fontWeight = FontWeight.Black, letterSpacing = 2.sp, color = Color(0xFF2E7D32), fontSize = 14.sp)
                         Spacer(modifier = Modifier.height(16.dp))
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             shape = RoundedCornerShape(24.dp),
                             elevation = CardDefaults.cardElevation(4.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.padding(24.dp)) {
-                                Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                                Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Text(text = "${node.content.body}\n\nKesimpulan: ${safeEndingData.summary}", fontSize = 14.sp, color = Color.DarkGray, lineHeight = 22.sp)
+                                Text(text = "${node.content.body}\n\nKesimpulan: ${safeEndingData.summary}", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f), lineHeight = 22.sp)
                                 Spacer(modifier = Modifier.height(24.dp))
-                                Divider(color = GrayBorder)
+                                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Text("Skor Rule of Law Akhir:", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                                Text("Skor Rule of Law Akhir:", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                 Spacer(modifier = Modifier.height(16.dp))
                                 currentMetrics?.let { metrics ->
                                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -281,11 +284,11 @@ fun QuizScreen(
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(24.dp))
-                                Divider(color = GrayBorder)
+                                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Text("Real World Case", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                                Text("Real World Case", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                 Spacer(modifier = Modifier.height(8.dp))
-                                Text(safeEndingData.real_world_case.detail, fontSize = 13.sp, color = GrayText)
+                                Text(safeEndingData.real_world_case.detail, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                     InfoTag(Icons.Default.MenuBook, "Tahun", safeEndingData.real_world_case.year, Modifier.weight(1f))
@@ -297,7 +300,7 @@ fun QuizScreen(
                     }
 
                     Column(
-                        modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Color.White).padding(24.dp),
+                        modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(MaterialTheme.colorScheme.surface).padding(24.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         OutlinedButton(
@@ -307,18 +310,21 @@ fun QuizScreen(
                                 navController.navigate("chat_ai/$safeContext")
                             },
                             modifier = Modifier.fillMaxWidth().height(56.dp),
-                            border = BorderStroke(2.dp, BluePrimary),
+                            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                             shape = RoundedCornerShape(16.dp)
                         ) {
-                            Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(18.dp))
+                            Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Tanya Pak Hukum (AI)", fontWeight = FontWeight.Bold)
+                            Text("Tanya Pak Hukum (AI)", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                         }
 
                         Button(
                             onClick = { navController.popBackStack() },
                             modifier = Modifier.fillMaxWidth().height(56.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Text("Simpan & Selesai", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
@@ -344,8 +350,8 @@ fun LiveMetricItem(icon: ImageVector, label: String, value: Int, color: Color) {
         Text(text = label, fontSize = 10.sp, color = color, textAlign = TextAlign.Center, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(4.dp))
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(text = value.toString(), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1A1A1A))
-            Text(text = "/100", fontSize = 10.sp, color = Color.Gray, modifier = Modifier.padding(bottom = 3.dp))
+            Text(text = value.toString(), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+            Text(text = "/100", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), modifier = Modifier.padding(bottom = 3.dp))
         }
         Spacer(modifier = Modifier.height(4.dp))
         LinearProgressIndicator(
@@ -362,20 +368,20 @@ fun OptionItem(choice: ScenarioData.Node.Choice, isSelected: Boolean, onClick: (
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(width = if (isSelected) 2.dp else 1.dp, color = if (isSelected) BluePrimary else GrayBorder),
-        color = if (isSelected) BlueSecondary else Color.White,
+        border = BorderStroke(width = if (isSelected) 2.dp else 1.dp, color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+        color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier.size(24.dp).clip(CircleShape).background(if (isSelected) BluePrimary else Color.White).border(1.dp, if (isSelected) BluePrimary else GrayBorder, CircleShape),
+                modifier = Modifier.size(24.dp).clip(CircleShape).background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface).border(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                if (isSelected) Box(Modifier.size(8.dp).clip(CircleShape).background(Color.White))
+                if (isSelected) Box(Modifier.size(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surface))
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = choice.text, fontSize = 14.sp, color = if (isSelected) BluePrimary else Color.Black, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
+                Text(text = choice.text, fontSize = 14.sp, color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
                 val impact = choice.impact
                 if (impact.fundamental_rights != 0 || impact.criminal_justice != 0 || impact.civil_justice != 0 || impact.corruption != 0) {
                     Spacer(modifier = Modifier.height(8.dp))
@@ -406,15 +412,15 @@ fun MiniImpactBadge(icon: ImageVector, value: Int, color: Color) {
 
 @Composable
 fun InfoTag(icon: ImageVector, label: String, value: String, modifier: Modifier) {
-    Surface(modifier = modifier, color = LightBlueBg, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, GrayBorder)) {
+    Surface(modifier = modifier, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(icon, null, modifier = Modifier.size(14.dp), tint = GrayText)
+                Icon(icon, null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                 Spacer(Modifier.width(4.dp))
-                Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = GrayText)
+                Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             }
             Spacer(modifier = Modifier.height(2.dp))
-            Text(value, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Text(value, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
