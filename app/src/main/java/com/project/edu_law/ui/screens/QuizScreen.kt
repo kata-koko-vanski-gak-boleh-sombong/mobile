@@ -48,7 +48,6 @@ fun QuizScreen(
     var selectedChoice by remember { mutableStateOf<ScenarioData.Node.Choice?>(null) }
     var showEnding by remember { mutableStateOf(false) }
 
-    // State untuk expand/collapse metrik
     var isMetricsExpanded by remember { mutableStateOf(true) }
 
     val mainScrollState = rememberScrollState()
@@ -73,7 +72,6 @@ fun QuizScreen(
     val maxStep = 4f
     val currentStepProgress = (node.sequence_order / maxStep).coerceIn(0f, 1f)
 
-    // Animasi mulus untuk Progress Bar Utama
     val animatedMainProgress by animateFloatAsState(
         targetValue = currentStepProgress,
         animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
@@ -93,12 +91,11 @@ fun QuizScreen(
                     .verticalScroll(mainScrollState)
                     .padding(20.dp)
             ) {
-                // Header dengan tombol Expand/Collapse
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { isMetricsExpanded = !isMetricsExpanded } // Action hide/show
+                        .clickable { isMetricsExpanded = !isMetricsExpanded }
                         .padding(vertical = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -108,7 +105,6 @@ fun QuizScreen(
                         Text("${(currentStepProgress * 100).toInt()}% Selesai", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = BluePrimary)
                     }
 
-                    // Icon indikator atas/bawah
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = if (isMetricsExpanded) "Sembunyikan" else "Lihat Metrik",
@@ -125,7 +121,6 @@ fun QuizScreen(
                     }
                 }
 
-                // Progress Bar dengan State Animasi
                 LinearProgressIndicator(
                     progress = { animatedMainProgress },
                     modifier = Modifier
@@ -139,7 +134,6 @@ fun QuizScreen(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // --- LIVE METRICS ROW (DENGAN ANIMASI HIDE/SHOW) ---
                 AnimatedVisibility(
                     visible = isMetricsExpanded,
                     enter = expandVertically(animationSpec = tween(500)) + fadeIn(animationSpec = tween(500)),
@@ -152,7 +146,7 @@ fun QuizScreen(
                             elevation = CardDefaults.cardElevation(2.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 16.dp) // Padding bawah agar rapi saat expand
+                                .padding(bottom = 16.dp)
                         ) {
                             Row(
                                 modifier = Modifier
@@ -173,7 +167,6 @@ fun QuizScreen(
                     }
                 }
 
-                // Card Skenario/Pertanyaan
                 Card(
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     shape = RoundedCornerShape(16.dp),
@@ -193,7 +186,7 @@ fun QuizScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         node.choices.forEach { choice ->
                             OptionItem(
-                                text = choice.text,
+                                choice = choice,
                                 isSelected = selectedChoice == choice,
                                 onClick = { selectedChoice = choice }
                             )
@@ -226,13 +219,10 @@ fun QuizScreen(
                                 if (nextNode != null) {
                                     currentNode = nextNode
                                     selectedChoice = null
-                                    isMetricsExpanded = false
 
-                                    // JIKA INI ADALAH NODE TERAKHIR (ENDING)
                                     if (nextNode.is_end_node) {
                                         showEnding = true
 
-                                        // --- TAMBAHKAN KODE INI UNTUK MENYIMPAN HISTORY ---
                                         currentMetrics?.let { finalMetrics ->
                                             val historyItem = com.project.edu_law.data.entity.HistoryEntity(
                                                 scenarioId = scenarioId,
@@ -285,8 +275,6 @@ fun QuizScreen(
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(40.dp))
-
                     Text(
                         "SIMULASI SELESAI",
                         fontWeight = FontWeight.Black,
@@ -402,10 +390,8 @@ fun QuizScreen(
     }
 }
 
-// --- KOMPONEN METRIK DENGAN ANIMASI ---
 @Composable
 fun LiveMetricItem(icon: ImageVector, label: String, value: Int, color: Color) {
-    // Animasi mulus untuk mini progress bar di dalam metrik
     val animatedMetricProgress by animateFloatAsState(
         targetValue = (value / 100f).coerceIn(0f, 1f),
         animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
@@ -439,7 +425,7 @@ fun LiveMetricItem(icon: ImageVector, label: String, value: Int, color: Color) {
         Spacer(modifier = Modifier.height(4.dp))
 
         LinearProgressIndicator(
-            progress = { animatedMetricProgress }, // Menggunakan state animasi
+            progress = { animatedMetricProgress },
             modifier = Modifier
                 .height(4.dp)
                 .fillMaxWidth(0.8f)
@@ -450,9 +436,8 @@ fun LiveMetricItem(icon: ImageVector, label: String, value: Int, color: Color) {
     }
 }
 
-// --- OptionItem & InfoTag ---
 @Composable
-fun OptionItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
+fun OptionItem(choice: ScenarioData.Node.Choice, isSelected: Boolean, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
@@ -467,6 +452,7 @@ fun OptionItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Radio Button Custom
             Box(
                 modifier = Modifier
                     .size(24.dp)
@@ -479,15 +465,61 @@ fun OptionItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
                     Box(Modifier.size(8.dp).clip(CircleShape).background(Color.White))
                 }
             }
+
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = text,
-                fontSize = 14.sp,
-                color = if (isSelected) BluePrimary else Color.Black,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                lineHeight = 20.sp
-            )
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = choice.text,
+                    fontSize = 14.sp,
+                    color = if (isSelected) BluePrimary else Color.Black,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    lineHeight = 20.sp
+                )
+
+                val impact = choice.impact
+                if (impact.fundamental_rights != 0 || impact.criminal_justice != 0 || impact.civil_justice != 0 || impact.corruption != 0) {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (impact.fundamental_rights != 0) {
+                            MiniImpactBadge(Icons.Default.Group, impact.fundamental_rights, Color(0xFF2E7D32))
+                        }
+                        if (impact.criminal_justice != 0) {
+                            MiniImpactBadge(Icons.Default.Gavel, impact.criminal_justice, Color(0xFF1565C0))
+                        }
+                        if (impact.civil_justice != 0) {
+                            MiniImpactBadge(Icons.Default.AccountBalance, impact.civil_justice, Color(0xFF6A1B9A))
+                        }
+                        if (impact.corruption != 0) {
+                            MiniImpactBadge(Icons.Default.Security, impact.corruption, Color(0xFFC62828))
+                        }
+                    }
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun MiniImpactBadge(icon: ImageVector, value: Int, color: Color) {
+    val displayValue = if (value > 0) "+$value" else value.toString()
+
+    val badgeBg = color.copy(alpha = 0.1f)
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(badgeBg)
+            .padding(horizontal = 6.dp, vertical = 2.dp)
+    ) {
+        Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.width(3.dp))
+        Text(text = displayValue, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = color)
     }
 }
 
