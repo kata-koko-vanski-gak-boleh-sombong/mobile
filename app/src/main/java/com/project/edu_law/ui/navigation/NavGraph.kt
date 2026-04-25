@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.project.edu_law.ui.screens.HomeScreen
+import com.project.edu_law.ui.screens.LegalScenarioScreen
 import com.project.edu_law.ui.screens.QuizScreen
 
 @Composable
@@ -18,6 +19,6 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
         modifier = Modifier.padding(paddingValues)
     ) {
         composable(Screen.Home.route) { HomeScreen() }
-        composable(Screen.Quiz.route) { QuizScreen() }
+        composable(Screen.Scenario.route) { LegalScenarioScreen() }
     }
 }

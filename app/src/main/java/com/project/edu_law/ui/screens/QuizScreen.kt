@@ -2,12 +2,13 @@ package com.project.edu_law.ui.screens
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.MenuBook
@@ -18,16 +19,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.project.edu_law.ui.theme.BluePrimary
-import com.project.edu_law.ui.theme.BlueSecondary
+import com.project.edu_law.data.Question
+import com.project.edu_law.ui.theme.*
 
 @Composable
 fun QuizScreen() {
     var currentIndex by remember { mutableIntStateOf(0) }
     var selectedOption by remember { mutableStateOf<Int?>(null) }
     var showInsight by remember { mutableStateOf(false) }
+
+    val mainScrollState = rememberScrollState()
+    val insightScrollState = rememberScrollState()
 
     val questions = listOf(
         Question(
@@ -51,72 +56,88 @@ fun QuizScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF8FAFC))
+                .background(White)
                 .statusBarsPadding()
-                .padding(20.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Question ${currentQuestion.id} of 12", fontSize = 12.sp, color = Color.Gray)
-                Text("33% Complete", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF059669))
-            }
-            LinearProgressIndicator(
-                progress = { 0.33f },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp)
-                    .height(6.dp)
-                    .clip(CircleShape),
-                color = Color(0xFF059669),
-                trackColor = Color(0xFFE2E8F0)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(24.dp)) {
-                    Text(currentQuestion.title, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1E293B))
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(currentQuestion.description, fontSize = 15.sp, lineHeight = 24.sp, color = Color(0xFF475569))
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(mainScrollState)
+                    .padding(20.dp)
             ) {
-                currentQuestion.options.forEachIndexed { index, text ->
-                    OptionItem(
-                        text = text,
-                        isSelected = selectedOption == index,
-                        onClick = { selectedOption = index }
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Question ${currentQuestion.id} of 12", fontSize = 12.sp, color = GrayText)
+                    Text("33% Complete", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = BluePrimary)
                 }
+                LinearProgressIndicator(
+                    progress = { 0.33f },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                        .height(6.dp)
+                        .clip(CircleShape),
+                    color = BluePrimary,
+                    trackColor = GrayBorder
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = White),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, GrayBorder),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Text(currentQuestion.title, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(currentQuestion.description, fontSize = 15.sp, lineHeight = 24.sp, color = GrayText)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    currentQuestion.options.forEachIndexed { index, text ->
+                        OptionItem(
+                            text = text,
+                            isSelected = selectedOption == index,
+                            onClick = { selectedOption = index }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
-            Button(
-                onClick = { showInsight = true },
-                enabled = selectedOption != null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
-                shape = RoundedCornerShape(28.dp)
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = White,
+                shadowElevation = 8.dp
             ) {
-                Text("Konfirmasi Jawaban", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Button(
+                    onClick = { showInsight = true },
+                    enabled = selectedOption != null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BluePrimary,
+                        disabledContainerColor = GrayBorder
+                    ),
+                    shape = RoundedCornerShape(28.dp)
+                ) {
+                    Text("Konfirmasi Jawaban", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = White)
+                }
             }
         }
 
+        // --- OVERLAY LEGAL INSIGHT ---
         AnimatedVisibility(
             visible = showInsight,
             enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
@@ -125,67 +146,80 @@ fun QuizScreen() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
-                    .padding(24.dp)
+                    .background(MintBackground) // Menggunakan MintBackground dari Theme
             ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(insightScrollState)
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Spacer(modifier = Modifier.height(40.dp))
+
                     Text(
-                        "LEGAL INSIGHT",
+                        "Legal Insight",
                         fontWeight = FontWeight.Black,
-                        letterSpacing = 1.sp,
-                        color = Color(0xFF00C4B4),
+                        letterSpacing = 2.sp,
+                        color = White,
                         fontSize = 14.sp
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = White),
                         shape = RoundedCornerShape(24.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(24.dp)) {
 
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Text(currentQuestion.insightTitle, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            Text(currentQuestion.insightTitle, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
 
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Text(
                                 currentQuestion.insightDescription,
                                 fontSize = 14.sp,
-                                color = Color.DarkGray,
-                                lineHeight = 20.sp
+                                color = GrayText,
+                                lineHeight = 22.sp
                             )
 
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
 
-                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
                                 InfoTag(Icons.Default.MenuBook, "Sumber", "Common Law Tradition", Modifier.weight(1f))
                                 InfoTag(Icons.Default.Gavel, "Application", "Appellate Procedures", Modifier.weight(1f))
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(100.dp))
                 }
 
-                Button(
-                    onClick = {
-                        showInsight = false
-                        selectedOption = null
-                    },
+                Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .height(56.dp)
-                        .padding(bottom = 16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
-                    shape = RoundedCornerShape(28.dp)
+                        .background(Color.Transparent)
+                        .padding(24.dp)
                 ) {
-                    Text("Continue to Next Question", fontWeight = FontWeight.Bold)
+                    Button(
+                        onClick = {
+                            showInsight = false
+                            selectedOption = null
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
+                        shape = RoundedCornerShape(28.dp)
+                    ) {
+                        Text("Next Scenario", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = White)
+                    }
                 }
             }
         }
@@ -197,8 +231,11 @@ fun OptionItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(if (isSelected) 2.dp else 1.dp, if (isSelected) BluePrimary else Color(0xFFE2E8F0)),
-        color = if (isSelected) BlueSecondary else Color.White,
+        border = BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) BluePrimary else GrayBorder
+        ),
+        color = if (isSelected) BlueSecondary else White,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -209,16 +246,27 @@ fun OptionItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
-                    .background(if (isSelected) BlueSecondary else Color.White)
-                    .border(1.dp, if (isSelected) BlueSecondary else Color.LightGray, CircleShape),
+                    .background(if (isSelected) BluePrimary else White)
+                    .border(1.dp, if (isSelected) BluePrimary else GrayBorder, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 if (isSelected) {
-                    Box(Modifier.size(8.dp).clip(CircleShape).background(Color.White))
+                    Box(
+                        Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(White)
+                    )
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text, fontSize = 14.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
+            Text(
+                text = text,
+                fontSize = 14.sp,
+                color = if (isSelected) BluePrimary else Color.Black,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                lineHeight = 20.sp
+            )
         }
     }
 }
@@ -227,26 +275,18 @@ fun OptionItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
 fun InfoTag(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String, modifier: Modifier) {
     Surface(
         modifier = modifier,
-        color = Color(0xFFF8FAFC),
+        color = LightBlueBg,
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, Color(0xFFF1F5F9))
+        border = BorderStroke(1.dp, GrayBorder)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(icon, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                Icon(icon, null, modifier = Modifier.size(14.dp), tint = GrayText)
                 Spacer(Modifier.width(4.dp))
-                Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+                Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = GrayText)
             }
-            Text(value, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(value, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Black)
         }
     }
 }
-
-data class Question(
-    val id: Int,
-    val title: String,
-    val description: String,
-    val options: List<String>,
-    val insightTitle: String,
-    val insightDescription: String
-)

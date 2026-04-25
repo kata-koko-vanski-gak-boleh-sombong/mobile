@@ -12,11 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Edulaw">
         <activity
-            android:name=".ui.screens.QuizActivity"
-            android:exported="false"
-            android:label="@string/title_activity_quiz"
-            android:theme="@style/Theme.Edulaw" />
-        <activity
             android:name=".ui.OnboardActivity"
             android:exported="true"
             android:label="@string/title_activity_onboard"
@@ -27,11 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.screens.HomeActivity"
-            android:exported="false"
-            android:label="HomeActivity"
-            android:theme="@style/Theme.Edulaw" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
