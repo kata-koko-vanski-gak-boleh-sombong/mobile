@@ -18,9 +18,7 @@ import androidx.navigation.NavHostController
 import com.project.edu_law.ui.navigation.Screen
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.project.edu_law.data.entity.ScenarioEntity
-import com.project.edu_law.data.repository.ScenarioRepository
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 
 @Composable

@@ -18,18 +18,13 @@ import com.project.edu_law.ui.screens.QuizScreen
 import com.project.edu_law.ui.screens.ScenarioOverviewScreen
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 
-// com/project/edu_law/ui/navigation/SetupNavGraph.kt
-
 @Composable
 fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // 1. Ambil instance database
     val database = remember { AppDatabase.getDatabase(context, scope) }
     val scenarioDao = database.scenarioDao()
-
-    // 2. Inisialisasi Repository (Inilah yang tadi kurang)
     val repository = remember { ScenarioRepository(scenarioDao) }
 
     NavHost(
@@ -40,7 +35,6 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
         composable(Screen.Home.route) { HomeScreen() }
 
         composable(Screen.Scenario.route) {
-            // 3. Sekarang 'repository' sudah tersedia di sini
             val viewModel: ScenarioViewModel = viewModel(
                 factory = ScenarioViewModel.provideFactory(repository)
             )
@@ -56,7 +50,6 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
         ) { backStackEntry ->
             val scenarioId = backStackEntry.arguments?.getString("scenarioId")
 
-            // Pakai repository yang sama
             val viewModel: ScenarioViewModel = viewModel(
                 factory = ScenarioViewModel.provideFactory(repository)
             )
@@ -64,12 +57,26 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
             ScenarioOverviewScreen(
                 scenarioId = scenarioId,
                 viewModel = viewModel,
-                onStartSimulation = {
-                    navController.navigate(Screen.Simulation.route)
+                onStartSimulation = { id ->
+                    navController.navigate("${Screen.Simulation.route}/$id")
                 }
             )
         }
 
-        composable(Screen.Simulation.route) { QuizScreen() }
+        composable(
+            route = Screen.Simulation.route + "/{scenarioId}"
+        ) { backStackEntry ->
+            val scenarioId = backStackEntry.arguments?.getString("scenarioId") ?: return@composable
+
+            val viewModel: ScenarioViewModel = viewModel(
+                factory = ScenarioViewModel.provideFactory(repository)
+            )
+
+            QuizScreen(
+                scenarioId = scenarioId,
+                viewModel = viewModel,
+                navController = navController
+            )
+        }
     }
 }

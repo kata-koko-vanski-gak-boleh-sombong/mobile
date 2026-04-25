@@ -52,7 +52,6 @@ data class ScenarioData(
         }
 
         data class Content(
-            val audio_url: String,
             val body: String,
             val title: String
         )

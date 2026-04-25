@@ -12,7 +12,7 @@ interface ScenarioDao {
     @Query("SELECT * FROM scenarios")
     fun getAllScenarios(): Flow<List<ScenarioEntity>>
 
-    @Query("SELECT * FROM scenarios WHERE scenario_id = :id")
+    @Query("SELECT * FROM scenarios WHERE id = :id")
     suspend fun getScenarioById(id: String): ScenarioEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

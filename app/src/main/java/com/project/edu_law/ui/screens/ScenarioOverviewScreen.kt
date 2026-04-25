@@ -25,8 +25,8 @@ import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 @Composable
 fun ScenarioOverviewScreen(
     scenarioId: String?,
-    viewModel: ScenarioViewModel = viewModel (),
-    onStartSimulation: () -> Unit
+    viewModel: ScenarioViewModel = viewModel(),
+    onStartSimulation: (String) -> Unit
 ) {
     LaunchedEffect (scenarioId) {
         scenarioId?.let { viewModel.getScenarioById(it) }
@@ -43,7 +43,7 @@ fun ScenarioOverviewScreen(
                     color = Color.White
                 ) {
                     Button(
-                        onClick = onStartSimulation,
+                        onClick = { onStartSimulation(scenario!!.id) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(20.dp)
