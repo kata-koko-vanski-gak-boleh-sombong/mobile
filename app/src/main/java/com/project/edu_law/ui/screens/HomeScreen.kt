@@ -44,7 +44,7 @@ fun HomeScreen() {
             .statusBarsPadding()
     ) {
         Text(
-            text = "EduLaw",
+            text = "Edu Justice",
             fontSize = 28.sp,
             fontWeight = FontWeight.ExtraBold,
             color = PrimaryBlue

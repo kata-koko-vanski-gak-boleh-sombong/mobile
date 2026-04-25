@@ -39,11 +39,23 @@ data class OnboardingPage(
 class OnboardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sharedPreferences = getSharedPreferences("EduLawPrefs", MODE_PRIVATE)
+        val isFirstTime = sharedPreferences.getBoolean("is_first_time", true)
+
+        if (!isFirstTime) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
+
         enableEdgeToEdge()
         setContent {
             EdulawTheme {
                 OnboardingScreen(
                     onFinish = {
+                        sharedPreferences.edit().putBoolean("is_first_time", false).apply()
+
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     }
@@ -149,7 +161,7 @@ fun OnboardingTopBar(onSkip: () -> Unit, showSkip: Boolean) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "EduJustice",
+            text = "Edu Justice",
             color = BluePrimary,
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.ExtraBold,
