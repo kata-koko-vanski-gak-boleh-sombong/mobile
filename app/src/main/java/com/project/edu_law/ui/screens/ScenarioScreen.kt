@@ -1,49 +1,27 @@
 package com.project.edu_law.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.BusinessCenter
 import androidx.compose.material.icons.filled.Gavel
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.project.edu_law.data.ScenarioData
 import com.project.edu_law.ui.navigation.Screen
 
 @Composable
-fun LegalScenarioScreen(navController: NavHostController) {
-    Scaffold (
-    ) { padding ->
-        Column (
+fun LegalScenarioScreen(navController: NavHostController, scenarioList: List<ScenarioData>) {
+    Scaffold { padding ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFFF8F9FA))
@@ -67,9 +45,9 @@ fun LegalScenarioScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(vertical = 16.dp, horizontal = 4.dp)
             ) {
-                items(scenarios.size) { index ->
+                items(scenarioList) { scenario ->
                     ScenarioCard(
-                        scenario = scenarios[index],
+                        scenario = scenario,
                         onStartClick = {
                             navController.navigate(Screen.Simulation.route)
                         }
@@ -82,10 +60,16 @@ fun LegalScenarioScreen(navController: NavHostController) {
 
 @Composable
 fun ScenarioCard(
-    scenario: LegalScenario,
+    scenario: ScenarioData,
     onStartClick: () -> Unit
 ) {
-    Card (
+    val (roleBgColor, roleTextColor) = when {
+        scenario.character.contains("Pemerintah", ignoreCase = true) -> Color(0xFF002366) to Color.White
+        scenario.character.contains("Masyarakat", ignoreCase = true) -> Color(0xFFE3F2FD) to Color(0xFF1976D2)
+        else -> Color(0xFFF5F5F5) to Color(0xFF424242)
+    }
+
+    Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -97,20 +81,20 @@ fun ScenarioCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface (
-                    color = scenario.roleColor,
+                Surface(
+                    color = roleBgColor,
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = scenario.role,
+                        text = "Peran: ${scenario.character}",
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold,
-                            color = scenario.contentColor
+                            color = roleTextColor
                         )
                     )
                 }
-                Icon(scenario.icon, contentDescription = null, tint = Color.LightGray)
+                Icon(Icons.Default.Gavel, contentDescription = null, tint = Color.LightGray)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -121,7 +105,7 @@ fun ScenarioCard(
             )
 
             Text(
-                text = scenario.description,
+                text = scenario.subtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.DarkGray,
                 modifier = Modifier.padding(vertical = 8.dp)
@@ -129,63 +113,14 @@ fun ScenarioCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button (
+            Button(
                 onClick = onStartClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF004080)),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(text = scenario.buttonText, color = Color.White)
+                Text(text = "Mulai simulasi", color = Color.White)
             }
         }
     }
 }
-
-data class LegalScenario(
-    val title: String,
-    val description: String,
-    val role: String,
-    val roleColor: Color,
-    val contentColor: Color,
-    val buttonText: String,
-    val icon: ImageVector
-)
-
-val scenarios = listOf(
-    LegalScenario(
-        "Sengketa Lahan Oakwood",
-        "Analisis hak atas tanah dan prosedur pengadaan lahan...",
-        "Peran: Pemerintah",
-        Color(0xFF002366),
-        Color.White,
-        "Mulai simulasi",
-        Icons.Default.Gavel
-    ),
-    LegalScenario(
-        "Akses Informasi Publik",
-        "Mempelajari batasan dan prosedur permohonan informasi...",
-        "Peran: Masyarakat",
-        Color(0xFFE3F2FD),
-        Color(0xFF1976D2),
-        "Mulai simulasi",
-        Icons.Default.People
-    ),
-    LegalScenario(
-        "Izin Lingkungan AMDAL",
-        "Menavigasi kepatuhan hukum lingkungan hidup dalam...",
-        "Peran: Korporasi",
-        Color(0xFFF5F5F5), // Abu-abu terang
-        Color(0xFF424242),
-        "Mulai simulasi",
-        Icons.Default.BusinessCenter
-    ),
-    LegalScenario(
-        "Kebijakan Pajak Daerah",
-        "Implementasi UU HKPD dalam pemungutan retribusi...",
-        "Peran: Pemerintah",
-        Color(0xFF002366),
-        Color.White,
-        "Mulai simulasi",
-        Icons.Default.AccountBalance
-    )
-)
