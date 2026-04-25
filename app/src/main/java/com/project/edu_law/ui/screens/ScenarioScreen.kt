@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,13 +30,31 @@ fun LegalScenarioScreen(
 
     val scenarioList by viewModel.allScenarios.collectAsState()
 
-    Scaffold { padding ->
+    Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    navController.navigate(Screen.Generate.route)
+                },
+                icon = {
+                    Icon(Icons.Default.AutoAwesome, contentDescription = "Generate Skenario")
+                },
+                text = {
+                    Text("Generate Skenario Baru", fontWeight = FontWeight.Bold)
+                },
+                containerColor = Color(0xFF004080),
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            )
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFFF8F9FA))
                 .padding(padding)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp)
         ) {
             Text(
                 text = "Legal Scenarios",
@@ -57,7 +76,7 @@ fun LegalScenarioScreen(
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp, horizontal = 4.dp)
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 80.dp, start = 4.dp, end = 4.dp)
                 ) {
                     items(
                         items = scenarioList,

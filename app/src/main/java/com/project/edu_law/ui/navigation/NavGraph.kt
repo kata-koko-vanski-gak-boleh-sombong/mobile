@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.project.edu_law.data.local.AppDatabase
 import com.project.edu_law.data.repository.ScenarioRepository
+import com.project.edu_law.ui.screens.GenerateScreen
 import com.project.edu_law.ui.screens.HomeScreen
 import com.project.edu_law.ui.screens.LegalScenarioScreen
 import com.project.edu_law.ui.screens.QuizScreen
@@ -79,6 +80,13 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
                 viewModel = viewModel,
                 navController = navController
             )
+        }
+
+        composable(Screen.Generate.route) {
+            val viewModel: ScenarioViewModel = viewModel(
+                factory = ScenarioViewModel.provideFactory(repository)
+            )
+            GenerateScreen(viewModel = viewModel, navController = navController)
         }
     }
 }

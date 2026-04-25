@@ -79,194 +79,202 @@ fun QuizScreen(
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF8F9FA))
-                .statusBarsPadding()
+
+        AnimatedVisibility(
+            visible = !showEnding,
+            exit = fadeOut(animationSpec = tween(300))
         ) {
             Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(mainScrollState)
-                    .padding(20.dp)
+                    .fillMaxSize()
+                    .background(Color(0xFFF8F9FA))
+                    .statusBarsPadding()
             ) {
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { isMetricsExpanded = !isMetricsExpanded }
-                        .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .weight(1f)
+                        .verticalScroll(mainScrollState)
+                        .padding(20.dp)
                 ) {
-                    Column {
-                        Text("Tahap ${node.sequence_order} dari 4", fontSize = 12.sp, color = GrayText)
-                        Text("${(currentStepProgress * 100).toInt()}% Selesai", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = BluePrimary)
-                    }
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = if (isMetricsExpanded) "Sembunyikan" else "Lihat Metrik",
-                            fontSize = 10.sp,
-                            color = GrayText,
-                            modifier = Modifier.padding(end = 4.dp)
-                        )
-                        Icon(
-                            imageVector = if (isMetricsExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Toggle Metrics",
-                            tint = GrayText,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
-
-                LinearProgressIndicator(
-                    progress = { animatedMainProgress },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .height(8.dp)
-                        .clip(CircleShape),
-                    color = BluePrimary,
-                    trackColor = GrayBorder
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                AnimatedVisibility(
-                    visible = isMetricsExpanded,
-                    enter = expandVertically(animationSpec = tween(500)) + fadeIn(animationSpec = tween(500)),
-                    exit = shrinkVertically(animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                ) {
-                    currentMetrics?.let { metrics ->
-                        Card(
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            shape = RoundedCornerShape(16.dp),
-                            elevation = CardDefaults.cardElevation(2.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 16.dp, horizontal = 8.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                LiveMetricItem(Icons.Default.Group, "Fundamental\nRights", metrics.fundamental_rights, Color(0xFF2E7D32))
-                                Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
-                                LiveMetricItem(Icons.Default.Gavel, "Criminal\nJustice", metrics.criminal_justice, Color(0xFF1565C0))
-                                Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
-                                LiveMetricItem(Icons.Default.AccountBalance, "Civil\nJustice", metrics.civil_justice, Color(0xFF6A1B9A))
-                                Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
-                                LiveMetricItem(Icons.Default.Security, "Corruption\nLevel", metrics.corruption, Color(0xFFC62828))
-                            }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { isMetricsExpanded = !isMetricsExpanded }
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text("Tahap ${node.sequence_order} dari 4", fontSize = 12.sp, color = GrayText)
+                            Text("${(currentStepProgress * 100).toInt()}% Selesai", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = BluePrimary)
                         }
-                    }
-                }
 
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(2.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(24.dp)) {
-                        Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(node.content.body, fontSize = 15.sp, lineHeight = 24.sp, color = Color.DarkGray)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                if (!node.is_end_node && node.choices != null) {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        node.choices.forEach { choice ->
-                            OptionItem(
-                                choice = choice,
-                                isSelected = selectedChoice == choice,
-                                onClick = { selectedChoice = choice }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = if (isMetricsExpanded) "Sembunyikan" else "Lihat Metrik",
+                                fontSize = 10.sp,
+                                color = GrayText,
+                                modifier = Modifier.padding(end = 4.dp)
+                            )
+                            Icon(
+                                imageVector = if (isMetricsExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                contentDescription = "Toggle Metrics",
+                                tint = GrayText,
+                                modifier = Modifier.size(18.dp)
                             )
                         }
                     }
+
+                    LinearProgressIndicator(
+                        progress = { animatedMainProgress },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .height(8.dp)
+                            .clip(CircleShape),
+                        color = BluePrimary,
+                        trackColor = GrayBorder
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    AnimatedVisibility(
+                        visible = isMetricsExpanded,
+                        enter = expandVertically(animationSpec = tween(500)) + fadeIn(animationSpec = tween(500)),
+                        exit = shrinkVertically(animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    ) {
+                        currentMetrics?.let { metrics ->
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = Color.White),
+                                shape = RoundedCornerShape(16.dp),
+                                elevation = CardDefaults.cardElevation(2.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 16.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 16.dp, horizontal = 8.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    LiveMetricItem(Icons.Default.Group, "Fundamental\nRights", metrics.fundamental_rights, Color(0xFF2E7D32))
+                                    Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
+                                    LiveMetricItem(Icons.Default.Gavel, "Criminal\nJustice", metrics.criminal_justice, Color(0xFF1565C0))
+                                    Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
+                                    LiveMetricItem(Icons.Default.AccountBalance, "Civil\nJustice", metrics.civil_justice, Color(0xFF6A1B9A))
+                                    Divider(modifier = Modifier.height(40.dp).width(1.dp), color = GrayBorder)
+                                    LiveMetricItem(Icons.Default.Security, "Corruption\nLevel", metrics.corruption, Color(0xFFC62828))
+                                }
+                            }
+                        }
+                    }
+
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(2.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(24.dp)) {
+                            Text(node.content.title, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(node.content.body, fontSize = 15.sp, lineHeight = 24.sp, color = Color.DarkGray)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    if (!node.is_end_node && node.content.choices != null) {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            node.content.choices.forEach { choice ->
+                                OptionItem(
+                                    choice = choice,
+                                    isSelected = selectedChoice == choice,
+                                    onClick = { selectedChoice = choice }
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
-            }
+                if (!node.is_end_node) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = Color.White,
+                        shadowElevation = 8.dp
+                    ) {
+                        Button(
+                            onClick = {
+                                selectedChoice?.let { choice ->
+                                    currentMetrics = currentMetrics?.let { prev ->
+                                        ScenarioData.MetricsBaseline(
+                                            fundamental_rights = (prev.fundamental_rights + choice.impact.fundamental_rights).coerceIn(0, 100),
+                                            criminal_justice = (prev.criminal_justice + choice.impact.criminal_justice).coerceIn(0, 100),
+                                            civil_justice = (prev.civil_justice + choice.impact.civil_justice).coerceIn(0, 100),
+                                            corruption = (prev.corruption + choice.impact.corruption).coerceIn(0, 100)
+                                        )
+                                    }
 
-            if (!node.is_end_node) {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = Color.White,
-                    shadowElevation = 8.dp
-                ) {
-                    Button(
-                        onClick = {
-                            selectedChoice?.let { choice ->
-                                currentMetrics = currentMetrics?.let { prev ->
-                                    ScenarioData.MetricsBaseline(
-                                        fundamental_rights = (prev.fundamental_rights + choice.impact.fundamental_rights).coerceIn(0, 100),
-                                        criminal_justice = (prev.criminal_justice + choice.impact.criminal_justice).coerceIn(0, 100),
-                                        civil_justice = (prev.civil_justice + choice.impact.civil_justice).coerceIn(0, 100),
-                                        corruption = (prev.corruption + choice.impact.corruption).coerceIn(0, 100)
-                                    )
-                                }
+                                    val nextNode = scenario?.nodes?.find { it.id == choice.next_node_id }
+                                    if (nextNode != null) {
+                                        currentNode = nextNode
+                                        selectedChoice = null
 
-                                val nextNode = scenario?.nodes?.find { it.id == choice.next_node_id }
-                                if (nextNode != null) {
-                                    currentNode = nextNode
-                                    selectedChoice = null
+                                        if (nextNode.is_end_node) {
+                                            showEnding = true
 
-                                    if (nextNode.is_end_node) {
-                                        showEnding = true
-
-                                        currentMetrics?.let { finalMetrics ->
-                                            val historyItem = com.project.edu_law.data.entity.HistoryEntity(
-                                                scenarioId = scenarioId,
-                                                scenarioTitle = scenario?.title ?: "Unknown",
-                                                fundamentalRights = finalMetrics.fundamental_rights,
-                                                criminalJustice = finalMetrics.criminal_justice,
-                                                civilJustice = finalMetrics.civil_justice,
-                                                corruption = finalMetrics.corruption,
-                                                endingType = nextNode.ending_data?.ending_type ?: "unknown"
-                                            )
-                                            viewModel.saveQuizHistory(historyItem)
+                                            currentMetrics?.let { finalMetrics ->
+                                                val historyItem = com.project.edu_law.data.entity.HistoryEntity(
+                                                    scenarioId = scenarioId,
+                                                    scenarioTitle = scenario?.title ?: "Unknown",
+                                                    fundamentalRights = finalMetrics.fundamental_rights,
+                                                    criminalJustice = finalMetrics.criminal_justice,
+                                                    civilJustice = finalMetrics.civil_justice,
+                                                    corruption = finalMetrics.corruption,
+                                                    // FIX: Mengambil ending_type dari dalam blok content!
+                                                    endingType = nextNode.content.ending_data?.ending_type ?: "unknown"
+                                                )
+                                                viewModel.saveQuizHistory(historyItem)
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        },
-                        enabled = selectedChoice != null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = BluePrimary,
-                            disabledContainerColor = GrayBorder
-                        ),
-                        shape = RoundedCornerShape(28.dp)
-                    ) {
-                        Text("Konfirmasi Keputusan", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                            },
+                            enabled = selectedChoice != null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BluePrimary,
+                                disabledContainerColor = GrayBorder
+                            ),
+                            shape = RoundedCornerShape(28.dp)
+                        ) {
+                            Text("Konfirmasi Keputusan", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                        }
                     }
                 }
             }
         }
 
         AnimatedVisibility(
-            visible = showEnding && node.ending_data != null,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            visible = showEnding && node.content.ending_data != null,
+            enter = slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500)),
+            exit = fadeOut()
         ) {
-            val endingData = node.ending_data!!
+            val endingData = node.content.ending_data!!
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color(0xFFF0FDF4))
+                    .statusBarsPadding()
             ) {
                 Column(
                     modifier = Modifier
@@ -351,13 +359,18 @@ fun QuizScreen(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .background(Color.Transparent)
+                        .background(
+                            brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color(0xFFF0FDF4), Color(0xFFF0FDF4))
+                            )
+                        )
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     OutlinedButton(
                         onClick = {
-                            // TODO: Navigasi ke rute Chat AI Anda
+                            val safeContext = java.net.URLEncoder.encode(endingData.summary, "UTF-8")
+                            navController.navigate("chat_ai/$safeContext")
                         },
                         modifier = Modifier
                             .fillMaxWidth()

@@ -15,7 +15,6 @@ data class ScenarioData(
     @SerializedName("nodes_data")
     val nodes: List<Node>,
     val scenario_id: String,
-
     val id_user: String? = null,
     val is_active: Boolean? = null,
     val created_at: String? = null,
@@ -29,22 +28,27 @@ data class ScenarioData(
     )
 
     data class Node(
-        val choices: List<Choice>,
-        val content: Content,
-        val ending_data: EndingData,
         val id: String,
+        val type: String,
         val is_end_node: Boolean,
         val is_start_node: Boolean,
         val sequence_order: Int,
-        val type: String
+        val content: Content
     ) {
+        data class Content(
+            val title: String,
+            val body: String,
+            val choices: List<Choice>? = null,
+            val ending_data: EndingData? = null
+        )
+
         data class Choice(
-            val choice_type: String,
             val id: String,
-            val impact: Impact,
-            val insight: Insight,
+            val text: String,
+            val choice_type: String,
             val next_node_id: String,
-            val text: String
+            val impact: Impact,
+            val insight: Insight
         ) {
             data class Impact(
                 val civil_justice: Int,
@@ -60,17 +64,12 @@ data class ScenarioData(
             )
         }
 
-        data class Content(
-            val body: String,
-            val title: String
-        )
-
         data class EndingData(
             val ending_code: String,
             val ending_type: String,
+            val summary: String,
             val final_metrics: FinalMetrics,
-            val real_world_case: RealWorldCase,
-            val summary: String
+            val real_world_case: RealWorldCase
         ) {
             data class FinalMetrics(
                 val civil_justice: Int,

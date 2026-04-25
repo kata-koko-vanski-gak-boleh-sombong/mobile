@@ -24,21 +24,18 @@ data class ScenarioEntity(
     val nodes: List<ScenarioData.Node>
 )
 
-/**
- * Extension function (opsional) untuk mempermudah konversi
- * dari model Data (JSON/API) ke Entity (Database)
- */
 fun ScenarioData.toEntity(): ScenarioEntity {
     return ScenarioEntity(
-        id = this.id,
-        scenario_id = this.scenario_id,
-        title = this.title,
-        subtitle = this.subtitle,
-        character = this.character,
-        context = this.context,
-        difficulty = this.difficulty,
-        estimated_duration_minutes = this.estimated_duration_minutes,
+        id = this.id ?: "",
+        scenario_id = this.scenario_id ?: "",
+        title = this.title ?: "",
+        subtitle = this.subtitle ?: "",
+        character = this.character ?: "Unknown",
+        context = this.context ?: "",
+        difficulty = this.difficulty ?: "",
+        estimated_duration_minutes = this.estimated_duration_minutes ?: 0,
         metrics_baseline = this.metrics_baseline,
-        nodes = this.nodes
+
+        nodes = this.nodes ?: emptyList()
     )
 }
