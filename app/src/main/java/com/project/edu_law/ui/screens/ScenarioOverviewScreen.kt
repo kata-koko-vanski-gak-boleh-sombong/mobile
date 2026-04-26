@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -21,11 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScenarioOverviewScreen(
     scenarioId: String?,
     viewModel: ScenarioViewModel = viewModel(),
-    onStartSimulation: (String) -> Unit
+    onStartSimulation: (String) -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     LaunchedEffect(scenarioId) {
         scenarioId?.let { viewModel.getScenarioById(it) }
@@ -35,6 +38,23 @@ fun ScenarioOverviewScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            TopAppBar(
+                title = { },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Kembali"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                )
+            )
+        },
         bottomBar = {
             if (scenario != null) {
                 Surface(
@@ -76,8 +96,6 @@ fun ScenarioOverviewScreen(
                     .padding(padding)
                     .padding(horizontal = 24.dp)
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
                 Text(
                     text = data.title,
                     style = MaterialTheme.typography.headlineMedium.copy(
@@ -102,7 +120,7 @@ fun ScenarioOverviewScreen(
                 ) {
                     InfoBadge(
                         label = "Kompleksitas",
-                        value = data.difficulty,
+                        value = formatDifficulty(data.difficulty),
                         icon = Icons.Default.BarChart,
                         modifier = Modifier.weight(1f)
                     )
@@ -196,5 +214,14 @@ fun InfoBadge(
             Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), fontWeight = FontWeight.Medium)
             Text(value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         }
+    }
+}
+
+fun formatDifficulty(difficulty: String): String {
+    return when (difficulty.lowercase()) {
+        "easy" -> "Mudah"
+        "medium" -> "Menengah"
+        "hard" -> "Sulit"
+        else -> difficulty
     }
 }

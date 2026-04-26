@@ -32,6 +32,10 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
 
     val repository = remember { ScenarioRepository(scenarioDao, historyDao) }
 
+    val sharedViewModel: ScenarioViewModel = viewModel(
+        factory = ScenarioViewModel.provideFactory(repository)
+    )
+
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route,
@@ -40,75 +44,58 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
         composable(Screen.Home.route) { HomeScreen() }
 
         composable(Screen.Scenario.route) {
-            val viewModel: ScenarioViewModel = viewModel(
-                factory = ScenarioViewModel.provideFactory(repository)
-            )
-
             LegalScenarioScreen(
                 navController = navController,
-                viewModel = viewModel
+                viewModel = sharedViewModel
             )
         }
 
-        composable(
-            route = Screen.ScenarioOverview.route + "/{scenarioId}"
-        ) { backStackEntry ->
+        composable(route = Screen.ScenarioOverview.route + "/{scenarioId}") { backStackEntry ->
             val scenarioId = backStackEntry.arguments?.getString("scenarioId")
-
-            val viewModel: ScenarioViewModel = viewModel(
-                factory = ScenarioViewModel.provideFactory(repository)
-            )
 
             ScenarioOverviewScreen(
                 scenarioId = scenarioId,
-                viewModel = viewModel,
+                viewModel = sharedViewModel,
                 onStartSimulation = { id ->
                     navController.navigate("${Screen.Simulation.route}/$id")
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
 
-        composable(
-            route = Screen.Simulation.route + "/{scenarioId}"
-        ) { backStackEntry ->
+        composable(route = Screen.Simulation.route + "/{scenarioId}") { backStackEntry ->
             val scenarioId = backStackEntry.arguments?.getString("scenarioId") ?: return@composable
-
-            val viewModel: ScenarioViewModel = viewModel(
-                factory = ScenarioViewModel.provideFactory(repository)
-            )
 
             QuizScreen(
                 scenarioId = scenarioId,
-                viewModel = viewModel,
+                viewModel = sharedViewModel,
                 navController = navController
             )
         }
 
         composable(Screen.Generate.route) {
-            val viewModel: ScenarioViewModel = viewModel(
-                factory = ScenarioViewModel.provideFactory(repository)
+            GenerateScreen(
+                viewModel = sharedViewModel,
+                navController = navController,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
             )
-            GenerateScreen(viewModel = viewModel, navController = navController)
         }
 
-        composable(
-            route = "chat_ai/{encodedContext}"
-        ) { backStackEntry ->
+        composable(route = "chat_ai/{encodedContext}") { backStackEntry ->
             val encodedContext = backStackEntry.arguments?.getString("encodedContext") ?: ""
-
             val decodedContext = try {
                 String(Base64.decode(encodedContext, Base64.URL_SAFE or Base64.NO_WRAP), Charsets.UTF_8)
             } catch (e: Exception) {
                 "Konteks tidak ditemukan."
             }
 
-            val viewModel: ScenarioViewModel = viewModel(
-                factory = ScenarioViewModel.provideFactory(repository)
-            )
-
             ChatScreen(
                 endingContext = decodedContext,
-                viewModel = viewModel,
+                viewModel = sharedViewModel,
                 navController = navController
             )
         }

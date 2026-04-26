@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
@@ -24,7 +25,8 @@ import com.project.edu_law.ui.screens.viewmodel.ScenarioViewModel
 @Composable
 fun GenerateScreen(
     viewModel: ScenarioViewModel,
-    navController: NavController
+    navController: NavController,
+    onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
     var selectedCharacter by remember { mutableStateOf("Orang Tua") }
@@ -47,9 +49,18 @@ fun GenerateScreen(
                         letterSpacing = (-0.5).sp
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Kembali"
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         },

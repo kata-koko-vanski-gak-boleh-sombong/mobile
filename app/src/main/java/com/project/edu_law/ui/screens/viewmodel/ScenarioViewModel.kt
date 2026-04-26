@@ -49,24 +49,24 @@ class ScenarioViewModel(private val repository: ScenarioRepository) : ViewModel(
     val generateError = _generateError.asStateFlow()
 
     fun generateScenario(difficulty: String, character: String, onSuccess: (String) -> Unit) {
-        _isGenerating.value = true
-        _generateError.value = null
+        viewModelScope.launch {
+            _isGenerating.value = true
+            _generateError.value = null
 
-        val userId = "913c93b0a8cf4a2aae61731f7d7ac9f4"
+            val userId = "913c93b0a8cf4a2aae61731f7d7ac9f4"
 
-        repository.generateNewSimulationAsync(userId, difficulty, character) { result ->
-
-            viewModelScope.launch {
-                if (result.isSuccess) {
-                    val newId = result.getOrNull()
-                    if (newId != null) {
-                        onSuccess(newId)
+            repository.generateNewSimulationAsync(userId, difficulty, character) { result ->
+                viewModelScope.launch {
+                    if (result.isSuccess) {
+                        val newId = result.getOrNull()
+                        if (newId != null) {
+                            onSuccess(newId)
+                        }
+                    } else {
+                        _generateError.value = result.exceptionOrNull()?.message ?: "Terjadi kesalahan"
                     }
-                } else {
-                    _generateError.value = result.exceptionOrNull()?.message ?: "Terjadi kesalahan"
+                    _isGenerating.value = false
                 }
-
-                _isGenerating.value = false
             }
         }
     }

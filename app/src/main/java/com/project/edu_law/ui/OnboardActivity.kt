@@ -67,17 +67,17 @@ class OnboardActivity : ComponentActivity() {
 fun OnboardingScreen(onFinish: () -> Unit) {
     val pages = listOf(
         OnboardingPage(
-            imageRes = R.drawable.placeholder,
+            imageRes = R.drawable.onboard_1,
             title = "Hukum Bukan Lagi\nLabirin Rumit",
             description = "Pahami aturan main di Indonesia dengan cara yang seru. Kami menerjemahkan pasal kaku menjadi simulasi yang mudah dimengerti."
         ),
         OnboardingPage(
-            imageRes = R.drawable.placeholder,
+            imageRes = R.drawable.onboard_2,
             title = "Tentukan Keadilan\ndi Tanganmu",
             description = "Hadapi dilema hukum nyata. Setiap keputusanmu akan memengaruhi indeks Rule of Law: dari keterbukaan hingga hak asasi."
         ),
         OnboardingPage(
-            imageRes = R.drawable.placeholder,
+            imageRes = R.drawable.onboard_3,
             title = "Lihat Dampak\nSkor Nyatamu",
             description = "Dapatkan rapor simulasi berdasarkan 4 Pilar WJP dan bandingkan dengan kasus nyata di lapangan. Siap jadi agen perubahan?"
         )
