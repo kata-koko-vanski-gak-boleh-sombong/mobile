@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">edu-law</string>
+    <string name="app_name">EduJustice</string>
     <string name="title_activity_onboard">OnboardActivity</string>
     <string name="title_activity_onboard_page.kt">OnboardPage.kt</string>
     <string name="title_activity_main">MainActivity</string>

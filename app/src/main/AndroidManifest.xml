@@ -14,22 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Edulaw"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".ui.OnboardActivity"
             android:exported="true"
-            android:label="@string/title_activity_onboard"
             android:theme="@style/Theme.Edulaw">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Edulaw" />
+
     </application>
 
 </manifest>
